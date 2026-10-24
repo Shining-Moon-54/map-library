@@ -22,5 +22,8 @@
   "flags": {
     "canUpload": true
   },
-  "url": "https://github.com/Shining-Moon-54/map-library"
+  "url": "https://github.com/Shining-Moon-54/map-library",
+  "manifest": "https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json",
+  "download": "https://github.com/Shining-Moon-54/map-library/releases/download/v0.4.0-alpha.1/map-library-v0.4.0-alpha.1.zip",
+  "changelog": "https://github.com/Shining-Moon-54/map-library/blob/main/CHANGELOG.md"
 }
