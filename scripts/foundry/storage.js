@@ -7,7 +7,10 @@ export function requireGM() { assert(game.user?.isGM, "Nur Spielleitungen dürfe
 export function localURL(path) {
   safePath(path);
   const base = new URL(document.baseURI);
-  return new URL(path.split("/").map(encodeURIComponent).join("/"), base).href;
+  // Scene paths may already contain URI escapes such as %20. Decode each
+  // component once before encoding it, preserving escapes without doubling %.
+  const encoded = path.split("/").map(part => encodeURIComponent(decodeURIComponent(part))).join("/");
+  return new URL(encoded, base).href;
 }
 
 export class FoundryStorage {

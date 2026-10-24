@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0-alpha.3 — 2026-10-24
+
+- Lokale Medienpfade mit Leerzeichen und bereits kodierten URI-Zeichen werden genau einmal kodiert. `%20` wird nicht mehr fälschlich zu `%2520`; dadurch verursachte 404-Fehler beim Archivieren sind behoben. Originaldateien und native Szenenreferenzen bleiben erhalten.
+- Drei Regressionstests für rohe/kodierte/gemischte Pfade, Umlaute und reservierte Dateinamenzeichen, unveränderte Pfadschutzprüfungen sowie Archivierung → portabler Export → Weltimport mit einem kodierten Serverdateinamen.
+- Insgesamt 41 automatisierte Tests. Das Archivformat bleibt unverändert; eine vollständige echte Foundry-v14-/Canvas-Abnahme steht weiterhin aus.
+
 ## 0.4.0-alpha.2 — 2026-10-24
 
 - Fehler „(destructured parameter) is not iterable“ beim Öffnen der Importvorschau behoben. `game.modules` ist eine Foundry Collection, deren Standarditerator Modulobjekte statt Schlüssel-Wert-Paaren liefert. Vorschau und Importprüfung lesen jetzt ausdrücklich die Werte und aktiven Modulkennungen.

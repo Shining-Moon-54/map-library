@@ -1,5 +1,5 @@
 export const ID = "map-library";
-export const VERSION = "0.4.0-alpha.2";
+export const VERSION = "0.4.0-alpha.3";
 export const FORMAT = "map-library/1";
 export const MiB = 1024 * 1024;
 export const LIMITS = Object.freeze({

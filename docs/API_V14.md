@@ -22,6 +22,8 @@ Stand: 24.10.2026. Geprüft gegen die offiziellen öffentlichen v14-Dokumentatio
 
 `ClientDocument.exportToJSON()` ist eine Downloadaktion; es wird nicht als JSON-Rückgabefunktion verwendet. `importFromJSON()` ist kein Ersatz für das Erstellen einer neuen Szene. Foundry-Szenenexporte bündeln die Medienbytes nicht automatisch; diese Aufgabe erledigt das Paketformat des Moduls.
 
+Lokale Szenenreferenzen können bereits URI-kodierte Dateinamen enthalten. `localURL()` prüft zuerst den Pfad, dekodiert jeden Pfadbestandteil genau einmal mit `decodeURIComponent()` und kodiert ihn mit `encodeURIComponent()` für die HTTP-Anfrage. Dadurch bleiben `%20` und UTF-8-Sequenzen korrekt, statt `%` erneut zu kodieren. Die Archivoriginale und Dateien werden dabei nicht umbenannt oder verändert. [JavaScript-Referenz: encodeURIComponent](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent), [decodeURIComponent](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent).
+
 ## Offizielle Quellen
 
 - [Scene](https://foundryvtt.com/api/v14/classes/foundry.documents.Scene.html)
