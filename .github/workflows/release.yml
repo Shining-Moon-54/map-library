@@ -1,0 +1,47 @@
+name: Publish experimental prerelease
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: map-library-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run check && npm test
+      - name: Create actual draft before inserting release URLs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TARGET_COMMIT: ${{ github.sha }}
+        run: |
+          tag="v$(node -p 'JSON.parse(require("fs").readFileSync("module.json")).version')"
+          gh release create "$tag" --draft --prerelease --target "$TARGET_COMMIT" --title "Map Library $tag — experimentelle Alpha" --notes-file docs/RELEASE_NOTES.md
+          echo "MAP_LIBRARY_RELEASE_PREPARED=$tag" >> "$GITHUB_ENV"
+      - name: Build and publish installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          npm run build -- --repository "$GH_REPO" --tag "$MAP_LIBRARY_RELEASE_PREPARED"
+          gh release upload "$MAP_LIBRARY_RELEASE_PREPARED" "dist/map-library-$MAP_LIBRARY_RELEASE_PREPARED.zip" dist/module.json dist/SHA256SUMS
+          gh release edit "$MAP_LIBRARY_RELEASE_PREPARED" --draft=false --prerelease
+          node tools/verify-release.mjs "$GH_REPO" "$MAP_LIBRARY_RELEASE_PREPARED"
+      - name: Publish stable update manifest only after anonymous download succeeds
+        run: |
+          cp dist/module.json module.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add module.json
+          git commit -m "Publish manifest for $MAP_LIBRARY_RELEASE_PREPARED"
+          git push origin HEAD:main

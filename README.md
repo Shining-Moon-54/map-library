@@ -1,2 +1,84 @@
-# map-library
-Mit OpenAI ChatGPT entwickelte Szenenbibliothek für Foundry VTT v14. Experimentelle Alpha mit portablen Kartenpaketen.
+> **Hinweis zur KI-Entwicklung / AI Development Notice**  
+> Dieses Projekt wird mithilfe künstlicher Intelligenz (OpenAI ChatGPT) konzipiert und entwickelt. Die Anforderungen und Entscheidungen entstehen in Zusammenarbeit mit dem Projektinitiator. Teile des Quellcodes und der Dokumentation sind KI-generiert; eine vollständige manuelle Überprüfung oder Fehlerfreiheit wird nicht garantiert.  
+> **English:** This project is designed and developed with the assistance of artificial intelligence (OpenAI ChatGPT). Requirements and decisions are made in collaboration with the project initiator. Parts of the source code and documentation are AI-generated and are not guaranteed to be fully reviewed or error-free.
+
+# Map Library
+
+Eine weltübergreifende Szenenbibliothek für **Foundry VTT v14**. Karten bleiben als native Szenendaten mit Ebenen, Wänden, Licht, Tiles, Dachbildern, Zeichnungen und Regionen archiviert. Erst beim Weltimport entsteht eine neue Szene im Weltverzeichnis.
+
+**Version 0.4.0-alpha.1 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
+
+## Aktueller Funktionsumfang
+
+| Funktion | Stand dieser Alpha |
+| --- | --- |
+| Native Szene aus der aktuellen Welt archivieren | Implementiert über `toObject()`; Original bleibt unverändert |
+| 30+ native Ebenen, eingebettete Kennungen, Regionen, Flags | Vollständige native JSON wird gespeichert; 32 Ebenen in synthetischen Tests geprüft |
+| Weltimport | Neue, inaktive Szene; keine Tokens; stabile eingebettete IDs; separate Bestätigung für Drittanbieter-Daten/Automatisierungen |
+| Bildimport | PNG, JPG/JPEG, WebP; einfache native v14-Szene |
+| Native Szenen-JSON | Import mit Assetinventar und Vorschau |
+| Assetkopien | Alle erkannten lokalen Medienreferenzen; SHA-256; manuelles Nachreichen; keine automatischen externen Downloads |
+| Eigene portable ZIPs | Export der Auswahl oder aller ausgewählten Treffer, Importinventar, Kategorienübernahme, Prüfsummen |
+| Fremde ZIPs | Inventar ohne vorgeschriebene Struktur; eindeutige Zuordnung; manuelle Auswahl bei Mehrdeutigkeit; Einzelprüfung der Karten |
+| Organisation | Verschachtelte Kategorien anlegen/umbenennen/verschieben, Metadaten, Suche, Tags, Sortierung, Favoriten, Kachel-/Listenansicht |
+| Mehrfachauswahl | Alle Treffer oder sichtbare Seite auswählen; verschieben und exportieren |
+| Versionen und Integrität | Unveränderliche Szenenrevisionen, Historie, SHA-256-Prüfung, Katalogkonflikterkennung |
+| Detect Grid | **Noch nicht implementiert**, eigener verbindlicher Meilenstein C |
+| UVTT / DD2VTT | **Noch nicht implementiert** |
+| Direkter serverseitiger HTTPS-Import | **Noch nicht implementiert**; sicherer Server-Fetch ist nicht durch die geprüften Client-APIs belegt |
+| Cloud-Konten, Cache, Kontolimits | **Noch nicht implementiert**; keine wirkungslosen Einstellungsfelder |
+| Vorschau je Ebene, vollautomatischer Massenimport | **Noch offen**; derzeit erste Hintergrundvorschau und einzeln bestätigte Importkandidaten |
+
+Die vollständige Produktspezifikation bleibt verbindlich: [Projektübergabe](docs/PROJEKTUEBERGABE.md). Der abweichende Implementierungsstand ist in [Anforderungsabdeckung](docs/REQUIREMENTS.md) und [Roadmap](docs/ROADMAP.md) nachvollziehbar.
+
+## Installation
+
+1. Installierbares ZIP aus einem veröffentlichten GitHub-Prerelease herunterladen oder mit `npm ci && npm run build` selbst bauen.
+2. ZIP so entpacken, dass `<Foundry-UserData>/Data/modules/map-library/module.json` existiert.
+3. Foundry neu starten und **Map Library** in einer v14-Testwelt aktivieren.
+4. Als GM **Map Library** unten im Fenster oder unter **Spieleinstellungen → Moduleinstellungen → Map Library öffnen** wählen.
+
+Ein veröffentlichtes Release stellt zusätzlich `module.json` für Foundrys Manifest-Installation bereit. Solange noch kein Release existiert, enthält das Quellmanifest **keine erfundenen Download-/Update-Adressen**. Der Release-Workflow legt zuerst ein tatsächliches Release an, lädt ZIP und Manifest hoch und prüft den anonymen Zugriff. Erst danach veröffentlicht er die stabile Update-Adresse im Quellmanifest.
+
+Die Nutzung erfordert weder Node/Python auf dem Foundry-Server noch einen zusätzlichen Dienst. Node 24 und npm werden ausschließlich für Entwicklung, Tests und Paketbau benötigt. Die ZIP-Bibliothek ist im Installationspaket enthalten.
+
+## Benutzung
+
+**Archivieren:** „Welt-Szene archivieren“ → Szene wählen → Assetinventar und Warnungen prüfen → Name, Kategorie, Tags und Rechteangaben ergänzen → fehlende Medien zuordnen → archivieren. Fehlende Assets und identische Szenendaten müssen ausdrücklich zugelassen werden.
+
+**Dateien importieren:** JSON und zugehörige Bilder gemeinsam auswählen oder ein ZIP öffnen. Im Inventar jeden gewünschten Eintrag prüfen. Bei mehreren gleichnamigen Assets die Zuordnung selbst wählen, anschließend „Zuordnung erneut prüfen“. Zusätzliche Dateien lassen sich in der Vorschau nachreichen. Kategorien aus eigenen Paketen können vor der Kartenaufnahme übernommen werden; widersprüchliche vorhandene Kategorien werden nicht überschrieben.
+
+**Weltkopie:** „In Welt importieren“ → Warnungen lesen → optionale Drittanbieter-Daten und geprüfte Automatisierungen bestätigen → „Neue Szene erstellen“. Das Archivoriginal wird weder aktualisiert noch gelöscht. Neue Weltkopien werden zunächst nicht aktiviert oder in der Navigation angezeigt; bei Bedarf in Foundry ändern.
+
+**Vorlage aktualisieren:** An einer Karte „Aus Welt aktualisieren“ wählen, Quellszene auswählen und neue Revision ausdrücklich speichern. Die vorherige Szene und deren Assets bleiben erhalten. Historie und Wiederherstellung: [RECOVERY.md](docs/RECOVERY.md).
+
+**Export:** Gewünschte Kategorien/Filter wählen, „Alle Treffer auswählen“, dann „Auswahl exportieren“. Ohne Filter und mit allen Treffern umfasst dies die vollständige aktuelle Bibliothek. Portable ZIPs enthalten aktuelle Kartenrevisionen; die gesamte Revisionshistorie wird durch ein Backup des persistenten Modulordners gesichert.
+
+## Daten und Grenzen
+
+- Bibliothek auf demselben Foundry-Server: `Data/modules/map-library/storage/`, von Welten unabhängig. `persistentStorage` und `uploadPersistent` werden genutzt. Eigene Backups bleiben erforderlich.
+- **Keine vertrauliche Datenablage:** Foundry stellt Mediendateien und diese JSON-Archive als statische Dateien bereit. GM-Prüfungen schützen die Modulaktionen, schaffen aber keine zusätzliche serverseitige Lesesperre. Originale können Tokens, versteckte Inhalte und Flags enthalten. Solche Archive nur berechtigten Personen zugänglich machen; niemals in dieses öffentliche Repository hochladen.
+- Nur erkannte Assetfelder werden paketiert. Unbekannte oder dynamisch aus Skripten erzeugte Abhängigkeiten lassen sich nicht garantiert finden. Unsupported Medien wie SVG/AVIF werden als fehlend gemeldet. Native v14-Roundtrips bleiben ein Abnahmepunkt.
+- Remote-Assets werden weder automatisch vom Server noch vom Browser geholt. Bei Bedarf Datei selbst beschaffen und im Import zuordnen. Quellenadresse ist eine Metadatenangabe, kein URL-Importer.
+- Alpha-Limits: ZIP 128 MiB, entpackt 256 MiB, Einzeldatei 64 MiB, JSON 16 MiB, maximal 5.000 ZIP-Einträge. Diese Sicherheitsgrenzen betreffen einen einzelnen Vorgang und sind keine feste Obergrenze der Kartenzahl. Große Sammlungen in Teilmengen exportieren.
+- Archiv- und Katalogrevisionen werden nicht automatisch bereinigt. Gleichzeitige Katalogschreiber können einen erkennbaren Konflikt erzeugen; beide Fassungen bleiben erhalten. Bei Konflikten stoppt das Modul weitere Änderungen.
+- Abbruch verhindert den Katalogabschluss, solange dieser nicht begonnen hat. Bereits hochgeladene, unverknüpfte Dateien können zurückbleiben. Ein bereits an Foundry abgesendeter Szenen-Erstellungsauftrag lässt sich nicht zuverlässig abbrechen.
+
+## Entwicklung
+
+```bash
+npm ci --ignore-scripts
+npm run check
+npm test
+npm run build
+```
+
+Das Installationspaket liegt anschließend unter `dist/`. `npm run vendor` aktualisiert die eingecheckte Kopie der exakt gepinnten MIT-Bibliothek fflate; keine CDN-Laufzeitabhängigkeit. Eigener Quellcode und Tests verwenden ES-Module.
+
+- [Architektur](docs/ARCHITECTURE.md), [ZIP-/Datenformat](docs/DATA_FORMAT.md)
+- [v14-API-Prüfung](docs/API_V14.md), [Test- und Abnahmeplan](docs/TESTING.md)
+- [Migration des Altprototyps](docs/MIGRATION.md), [Sicherheitsmodell](SECURITY.md)
+- [Cloud-Entwurf](docs/CLOUD.md), [Detect-Grid-Entwurf](docs/DETECT_GRID.md)
+- [Beitragen](CONTRIBUTING.md), [Änderungen](CHANGELOG.md), [Lizenzstatus](LICENSE)
+
+Lizenzentscheidung für den eigenen Projektcode: **noch offen**. Enthaltene Drittanbieter-Lizenzen bleiben gesondert gültig. Dieses Repository enthält keine fremden Karten, Kaufabenteuer, Zugangsdaten oder privaten Foundry-Weltdaten. Es wird zunächst nicht im offiziellen Foundry-Modulverzeichnis eingereicht.
