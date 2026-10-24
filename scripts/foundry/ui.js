@@ -3,6 +3,7 @@ import { assert, uid, extension, jsonParse, jsonBytes, sha256 } from "../core/ut
 import { categoryPath, queryCatalog, setCategory } from "../core/catalog.js";
 import { assetsOf, validateScene } from "../core/scene.js";
 import { inspectPackage, imageCandidate } from "../core/package.js";
+import { CLOUD_PROVIDERS, GB } from "../core/cloud.js";
 import { requireGM, localURL } from "./storage.js";
 
 export function node(tag, text, className) {
@@ -50,7 +51,7 @@ export function download(bytes, name, mime = "application/zip") {
   setTimeout(() => URL.revokeObjectURL(url), 30000);
 }
 
-export function makeApplications(storage, service) {
+export function makeApplications(storage, service, cloud = null) {
   const ApplicationV2 = foundry.applications.api.ApplicationV2;
   class DOMWindow extends ApplicationV2 {
     static DEFAULT_OPTIONS = { classes: ["map-library"], position: { width: 760, height: 720 }, window: { resizable: true } };
@@ -63,6 +64,93 @@ export function makeApplications(storage, service) {
     async _onClose(options) { this.controller.abort(); await super._onClose(options); }
   }
   const modal = async (title, build, options) => { const app = new DOMWindow(title, build, options); await app.render({ force: true }); return app; };
+
+  const helpLink = () => {
+    const link = node("a", "Einrichtung für Google Drive und Dropbox");
+    link.href = "https://github.com/Shining-Moon-54/map-library/blob/main/docs/CLOUD.md";
+    link.target = "_blank"; link.rel = "noopener noreferrer"; return link;
+  };
+  async function editCloudProfile(profile = null, onSaved = () => {}) {
+    assert(cloud, "Cloudfunktionen nicht verfügbar.");
+    return modal(profile ? "Cloudprofil bearbeiten" : "Cloud hinzufügen", app => {
+      const form = node("form"); form.addEventListener("submit", e => e.preventDefault());
+      const provider = field(form, "Anbieter", "provider", profile?.provider || "google", { options: Object.entries(CLOUD_PROVIDERS) });
+      provider.disabled = Boolean(profile);
+      const name = field(form, "Profilname", "name", profile?.name || "");
+      const settings = node("div"); form.append(settings); let clientId;
+      const showSettings = () => {
+        settings.replaceChildren();
+        clientId = field(settings, provider.value === "google" ? "Google-OAuth-Client-ID (Webanwendung)" : "Dropbox-App-Key (App folder)", "clientId", profile?.clientId || "");
+        clientId.readOnly = Boolean(profile);
+        settings.append(node("p", provider.value === "google" ?
+          `Einmalig eine Google-Web-App mit aktivierter Drive API registrieren. Erlaubte JavaScript-Herkunft: ${new URL(document.baseURI).origin}. Danach wird nur Zugriff auf mit dieser App angelegte Dateien angefragt.` :
+          "Einmalig eine Dropbox-App mit Zugriffstyp „App folder“ registrieren. Benötigte Berechtigungen: account_info.read, files.metadata.read und files.content.write. Anmeldung erfolgt per einmaligem Code.", "ml-note"));
+      };
+      showSettings(); provider.addEventListener("change", showSettings);
+      const limit = field(form, "Speicherlimit für Exporte dieses Profils in GB (0 = kein Modullimit)", "limitGB", profile?.limitGB ?? 0, { type: "number" });
+      limit.min = "0"; limit.step = "any";
+      form.append(helpLink(), node("p", "App-ID bzw. App-Key sind öffentliche Kennungen. Kein Client-Secret, Passwort oder Zugangstoken eintragen. Profile bleiben in diesem Browser; Anmeldungen gelten bis zum Neuladen oder Ablauf.", "ml-note"));
+      form.append(button("Profil speichern", async () => {
+        cloud.save({ id: profile?.id ?? cloud.newId(), provider: provider.value, name: name.value, clientId: clientId.value,
+          limitGB: limit.value, accountId: profile?.accountId || "", accountLabel: profile?.accountLabel || "" });
+        await onSaved(); await app.close();
+      }, "ml-primary"), button("Abbrechen", () => app.close())); return form;
+    });
+  }
+  async function connectCloud(id, onConnected = () => {}) {
+    const profile = cloud.profile(id);
+    return modal(`${CLOUD_PROVIDERS[profile.provider]} verbinden`, async app => {
+      const root = node("section");
+      const flow = await cloud.prepareConnection(id, { signal: app.controller.signal });
+      root.append(node("p", `Profil: ${profile.name}${profile.accountLabel ? ` · bisheriges Konto: ${profile.accountLabel}` : ""}`));
+      if (flow.provider === "google") {
+        root.append(node("p", "Wähle dein Google-Konto und erlaube den Dateizugriff. Die Zugangsdaten gibst du ausschließlich bei Google ein."),
+          button("Google-Anmeldung starten", async () => {
+            await flow.finish(); await onConnected(); ui.notifications.info("Google Drive ist für diese Sitzung verbunden."); await app.close();
+          }, "ml-primary"));
+      } else {
+        root.append(node("p", "Öffne Dropbox, melde dich dort an und erlaube den Zugriff. Kopiere den anschließend angezeigten einmaligen Autorisierungscode hierher."));
+        const link = node("a", "Dropbox-Anmeldung öffnen", "ml-connect-link"); link.href = flow.url; link.target = "_blank"; link.rel = "noopener noreferrer"; root.append(link);
+        const code = field(root, "Einmaliger Dropbox-Autorisierungscode", "code", "", { type: "password" }); code.autocomplete = "off";
+        root.append(button("Dropbox-Verbindung abschließen", async () => {
+          const value = code.value; code.value = ""; await flow.finish(value); await onConnected();
+          ui.notifications.info("Dropbox ist für diese Sitzung verbunden."); await app.close();
+        }, "ml-primary"));
+      }
+      root.append(node("p", "Die Freigabe wird nur im Arbeitsspeicher dieser Sitzung gehalten. Für ein weiteres Konto lege ein eigenes Profil an.", "ml-note"), button("Abbrechen", () => app.close()));
+      return root;
+    });
+  }
+  class CloudSettingsApp extends DOMWindow {
+    constructor(options = {}) {
+      super("Map Library – Cloud-Konten", app => {
+        assert(cloud, "Cloudfunktionen nicht verfügbar.");
+        const root = node("section", null, "ml-cloud");
+        root.append(node("p", "Verbinde Google Drive oder Dropbox für manuelle Kartenexporte. Mehrere Konten sind über getrennte Profile möglich."), helpLink(),
+          node("p", "Für diese Alpha brauchst du einmalig eine eigene Anbieter-App-Kennung. Anmeldungen gelten nur für die laufende Browsersitzung. Das Entfernen eines Profils löscht keine Cloud-Dateien.", "ml-note"));
+        root.append(button("Cloud hinzufügen", () => editCloudProfile(null, () => app.render({ force: true }))));
+        for (const profile of cloud.profiles()) {
+          const row = node("article", null, "ml-cloud-profile");
+          row.append(node("h3", `${profile.name} · ${CLOUD_PROVIDERS[profile.provider]}`),
+            node("p", `${profile.accountLabel || "Noch kein Konto verbunden"} · ${cloud.connected(profile.id) ? "Verbunden" : "Nicht verbunden"} · Limit: ${profile.limitGB ? `${profile.limitGB} GB` : "kein Modullimit"}`));
+          const actions = node("div", null, "ml-toolbar");
+          actions.append(button("Verbinden", () => connectCloud(profile.id, () => app.render({ force: true }))),
+            button("Bearbeiten", () => editCloudProfile(profile, () => app.render({ force: true }))),
+            button("Speichernutzung prüfen", async () => {
+              const scan = await cloud.scan(profile.id, { signal: app.controller.signal });
+              ui.notifications.info(`${profile.name}: ${(scan.used / GB).toFixed(3)} GB in ${scan.count} Dateien dieses Exportprofils.`);
+            }), button("Trennen", async () => { cloud.disconnect(profile.id); await app.render({ force: true }); }),
+            button("Profil entfernen", () => modal("Cloudprofil entfernen?", confirm => {
+              const body = node("section"); body.append(node("p", `„${profile.name}“ aus diesem Browser entfernen? Die Cloud-Dateien bleiben erhalten.`),
+                button("Profil entfernen", async () => { cloud.remove(profile.id); await app.render({ force: true }); await confirm.close(); }, "ml-danger"),
+                button("Abbrechen", () => confirm.close())); return body;
+            })));
+          row.append(actions); root.append(row);
+        }
+        root.append(button("Schließen", () => app.close())); return root;
+      }, options);
+    }
+  }
 
   async function archiveWorldScene(sceneId, { update = null, onSaved = () => {} } = {}) {
     requireGM();
@@ -178,7 +266,9 @@ export function makeApplications(storage, service) {
       const header = node("header", null, "ml-heading"); header.append(node("h2", "Map Library"), node("span", `v${VERSION} · Experimentelle Alpha`, "ml-badge"));
       root.append(header, node("p", "Szenen archivieren, ordnen und in anderen Welten wiederverwenden.", "ml-subtitle"));
       const toolbar = node("div", null, "ml-toolbar");
-      toolbar.append(button("Welt-Szene archivieren", () => this.chooseWorld()), button("Dateien / ZIP importieren", () => filePicker.click()), button("Kategorie anlegen", () => this.editCategory()), button("Kategorie bearbeiten", () => this.chooseCategory()), button("Neu laden", () => this.render({ force: true })));
+      toolbar.append(button("Welt-Szene archivieren", () => this.chooseWorld()), button("Dateien / ZIP importieren", () => filePicker.click()), button("Kategorie anlegen", () => this.editCategory()), button("Kategorie bearbeiten", () => this.chooseCategory()));
+      if (cloud) toolbar.append(button("Cloud-Konten", () => new CloudSettingsApp().render({ force: true })));
+      toolbar.append(button("Neu laden", () => this.render({ force: true })));
       const filePicker = node("input"); filePicker.type = "file"; filePicker.multiple = true;
       filePicker.accept = ".json,.zip,.png,.jpg,.jpeg,.webp"; filePicker.hidden = true;
       filePicker.addEventListener("change", () => this.run("Import inventarisieren", signal => this.readFiles([...filePicker.files], signal)));
@@ -189,6 +279,7 @@ export function makeApplications(storage, service) {
       const favorites = field(filter, "Nur Favoriten", "favorites", this.query.favorites, { type: "checkbox" });
       const sort = field(filter, "Sortierung", "sort", this.query.sort || "name", { options: [["name", "Name A–Z"], ["newest", "Zuletzt geändert"]] });
       const layout = field(filter, "Ansicht", "layout", this.layout || "tiles", { options: [["tiles", "Kacheln"], ["list", "Liste"]] });
+      const state = field(filter, "Bereich", "state", this.query.archived ? "trash" : "library", { options: [["library", "Bibliothek"], ["trash", "Papierkorb"]] });
       root.append(filter);
       const bulk = node("div", null, "ml-toolbar");
       this.selectedLabel = node("span", "0 ausgewählt");
@@ -202,23 +293,31 @@ export function makeApplications(storage, service) {
           const bytes = await service.export(this.catalog, records, { signal, progress: (n, total) => this.status.textContent = `Export: ${n} / ${total} Karten` });
           download(bytes, `Map-Library-${new Date().toISOString().slice(0, 10)}.zip`);
         })), button("Auswahl verschieben", () => this.moveSelected()));
+      if (cloud && !this.query.archived) bulk.append(button("Auswahl in Cloud exportieren", () => this.cloudExport(this.selectedRecords())));
+      bulk.append(this.query.archived ? button("Auswahl wiederherstellen", () => this.restoreRecords(this.selectedRecords())) :
+        button("Auswahl löschen", () => this.deleteRecords(this.selectedRecords()), "ml-danger"));
       root.append(bulk);
       this.gallery = node("div", null, "ml-gallery"); root.append(this.gallery);
       const footer = node("footer", null, "ml-footer"); this.count = node("span");
       footer.append(button("← Zurück", () => { this.query.page = (this.page.page || 0) - 1; this.paint(); }), this.count, button("Weiter →", () => { this.query.page = this.page.page + 1; this.paint(); }));
       this.status = node("p", "Bereit", "ml-status"); this.status.setAttribute("role", "status");
       this.cancelButton = button("Vorgang abbrechen", () => this.controller?.abort()); this.cancelButton.hidden = true;
-      root.append(footer, this.status, this.cancelButton, node("p", "Noch offen: Detect Grid, UVTT/DD2VTT, sicherer direkter URL-Import und integrierte Cloud-Konten. Vollständiger Umfang und Abnahme: README und docs/ROADMAP.md.", "ml-note"));
+      root.append(footer, this.status, this.cancelButton, node("p", this.query.archived ?
+        "Gelöschte Karten können wiederhergestellt werden. Mediendateien bleiben erhalten und belegen weiterhin Speicher, damit vorhandene Welt-Szenen ihre Bilder behalten." :
+        "Cloudexporte starten nur per Klick. Noch offen: Detect Grid, UVTT/DD2VTT, direkter URL-Import und Cloud-Synchronisierung/Cache. Vollständiger Umfang: README.", "ml-note"));
       let timer;
       search.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => { this.query.search = search.value; this.query.page = 0; this.paint(); }, 180); });
       for (const control of [category, favorites, sort, layout]) control.addEventListener("change", () => {
         this.query.category = category.value; this.query.favorites = favorites.checked; this.query.sort = sort.value; this.layout = layout.value; this.query.page = 0; this.paint();
       });
+      state.addEventListener("change", () => { this.query.archived = state.value === "trash"; this.query.page = 0; this.selection.clear(); this.render({ force: true }).catch(error => ui.notifications.error(error.message)); });
       this.paint(); return root;
     }
     _replaceHTML(result, content) { content.replaceChildren(result); }
     async _onClose(options) { this.controller?.abort(); await super._onClose(options); }
     paint() {
+      const eligible = new Set(this.catalog.entries.filter(e => Boolean(e.archived) === Boolean(this.query.archived)).map(e => e.id));
+      for (const id of this.selection) if (!eligible.has(id)) this.selection.delete(id);
       this.page = queryCatalog(this.catalog, { ...this.query, pageSize: 48 });
       this.gallery.classList.toggle("ml-list", this.layout === "list"); this.gallery.replaceChildren();
       for (const entry of this.page.entries) {
@@ -234,15 +333,78 @@ export function makeApplications(storage, service) {
         card.append(node("p", categoryPath(this.catalog, entry.category), "ml-category"), node("p", `${entry.levels} Ebenen · ${entry.width || "?"} × ${entry.height || "?"} px · ${(entry.bytes / 1048576).toFixed(1)} MiB`), node("p", (entry.tags || []).join(" · "), "ml-tags"));
         if (entry.warnings?.some(w => w.code === "asset")) card.append(node("p", "⚠ Fehlende Assetdateien", "ml-warning"));
         const actions = node("div", null, "ml-card-actions");
-        actions.append(button("In Welt importieren", () => this.run("Weltimport prüfen", () => worldImport(entry)), "ml-primary"),
+        if (entry.archived) actions.append(button("Wiederherstellen", () => this.restoreRecords([entry]), "ml-primary"));
+        else actions.append(button("In Welt importieren", () => this.run("Weltimport prüfen", () => worldImport(entry)), "ml-primary"),
           button(entry.favorite ? "★ Favorit" : "☆ Favorit", async () => { await service.updateMetadata([entry.id], { favorite: !entry.favorite }); await this.render({ force: true }); }),
-          button("Details / bearbeiten", () => this.entryDetails(entry)),
           button("Aus Welt aktualisieren", () => this.chooseWorld(entry)));
+        actions.append(button("Details / bearbeiten", () => this.entryDetails(entry)));
+        if (!entry.archived) {
+          if (cloud) actions.append(button("In Cloud exportieren", () => this.cloudExport([entry])));
+          actions.append(button("Löschen", () => this.deleteRecords([entry]), "ml-danger"));
+        }
         card.append(actions); this.gallery.append(card);
       }
-      if (!this.page.entries.length) this.gallery.append(node("p", this.catalog.entries.length ? "Keine passenden Karten." : "Die Bibliothek ist leer. Archiviere eine Welt-Szene oder importiere Dateien.", "ml-empty"));
+      if (!this.page.entries.length) this.gallery.append(node("p", this.query.archived ? "Der Papierkorb enthält keine passenden Karten." :
+        this.catalog.entries.some(e => !e.archived) ? "Keine passenden Karten." : "Die Bibliothek ist leer. Archiviere eine Welt-Szene oder importiere Dateien.", "ml-empty"));
       this.count.textContent = `${this.page.total} Karten · Seite ${this.page.page + 1} / ${this.page.pages}`;
       this.selectedLabel.textContent = `${this.selection.size} ausgewählt`;
+    }
+    selectedRecords() {
+      const records = this.catalog.entries.filter(e => this.selection.has(e.id) && Boolean(e.archived) === Boolean(this.query.archived));
+      assert(records.length, "Zuerst Karten auswählen."); return records;
+    }
+    deleteRecords(records) {
+      assert(records.length, "Zuerst Karten auswählen.");
+      const expected = structuredClone(records);
+      return modal("Karten löschen?", app => {
+        const root = node("section");
+        root.append(node("p", `${records.length} Karte(n) in den Papierkorb verschieben?`));
+        const list = node("ul"); for (const entry of records.slice(0, 20)) list.append(node("li", entry.name));
+        if (records.length > 20) list.append(node("li", `… und ${records.length - 20} weitere`));
+        root.append(list, node("p", "Du kannst sie im Bereich „Papierkorb“ wiederherstellen. Welt-Szenen und Cloud-Dateien bleiben erhalten. Mediendateien werden weiter benötigt und belegen weiterhin Speicher.", "ml-note"),
+          button("In Papierkorb verschieben", async () => {
+            await service.setDeleted(expected, true, { signal: app.controller.signal });
+            this.selection.clear(); await this.render({ force: true }); await app.close(); ui.notifications.info("Karten in den Papierkorb verschoben.");
+          }, "ml-danger"), button("Abbrechen", () => app.close())); return root;
+      });
+    }
+    async restoreRecords(records) {
+      await service.setDeleted(records, false); this.selection.clear(); await this.render({ force: true }); ui.notifications.info("Karten wiederhergestellt.");
+    }
+    cloudExport(records) {
+      assert(cloud, "Cloudfunktionen nicht verfügbar."); assert(records.length, "Zuerst Karten auswählen.");
+      return modal("Karten in Cloud exportieren", app => {
+        const root = node("section"); const profiles = cloud.profiles();
+        root.append(node("p", `${records.length} Karte(n) mit Szenendaten, Medien und Prüfsummen als neues Paket hochladen.`));
+        if (!profiles.length) {
+          root.append(node("p", "Zuerst ein Google-Drive- oder Dropbox-Profil hinzufügen und verbinden."),
+            button("Cloud-Konten einrichten", async () => { await new CloudSettingsApp().render({ force: true }); await app.close(); }));
+          return root;
+        }
+        const profile = field(root, "Zielprofil", "profile", profiles[0].id, { options: profiles.map(p => [p.id,
+          `${p.name} · ${CLOUD_PROVIDERS[p.provider]}${p.accountLabel ? ` · ${p.accountLabel}` : ""}`]) });
+        const status = node("p", "Bereit", "ml-status"); status.setAttribute("role", "status");
+        root.append(button("Zielprofil verbinden", () => connectCloud(profile.value, () => { status.textContent = "Zielprofil verbunden. Export kann gestartet werden."; })),
+          node("p", "Das vorhandene Archiv bleibt lokal. Der Upload erstellt eine neue Datei im Exportordner dieses Profils. Es findet keine automatische Synchronisierung oder Löschung statt.", "ml-note"), status,
+          button("Jetzt in Cloud exportieren", async () => {
+            const target = profile.value; profile.disabled = true;
+            try {
+              const result = await cloud.export(target, async signal => {
+                const current = (await storage.load()).catalog;
+                for (const record of records) assert(current.entries.some(e => e.id === record.id && e.revision === record.revision && e.updated === record.updated && !e.archived),
+                  "Karte wurde zwischenzeitlich geändert oder gelöscht. Exportauswahl neu öffnen.");
+                status.textContent = "Exportpaket erstellen und prüfen …";
+                return service.export(current, records, { signal, progress: (n, count) => { status.textContent = `Paket erstellen: ${n} / ${count} Karten`; } });
+              }, { signal: app.controller.signal, progress: (n, total) => { status.textContent = `Cloudupload: ${(n / 1048576).toFixed(1)} / ${(total / 1048576).toFixed(1)} MiB`; } });
+              status.textContent = `Export bestätigt: ${result.name} · ${(result.bytes / 1048576).toFixed(1)} MiB · SHA-256: ${result.sha256}`;
+              ui.notifications.info(`Cloudexport nach ${result.profileName} bestätigt.`);
+            } catch (error) {
+              status.textContent = app.controller.signal.aborted ? "Export abgebrochen. Cloudziel auf eventuell abgeschlossene Dateien prüfen." : error.message;
+              throw error;
+            } finally { profile.disabled = false; }
+          }, "ml-primary"), button("Schließen / abbrechen", () => app.close()));
+        return root;
+      });
     }
     async run(label, action) {
       if (this.controller) { ui.notifications.warn("Es läuft bereits ein Vorgang."); return; }
@@ -362,5 +524,5 @@ export function makeApplications(storage, service) {
       });
     }
   }
-  return { MapLibraryApp, review, worldImport, archiveWorldScene };
+  return { MapLibraryApp, CloudSettingsApp, review, worldImport, archiveWorldScene };
 }

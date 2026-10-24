@@ -2,6 +2,7 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import assert from "node:assert/strict";
 import path from "node:path";
+import { VERSION } from "../scripts/core/constants.js";
 
 async function* files(directory) {
   for (const item of await readdir(directory, { withFileTypes: true })) {
@@ -13,6 +14,7 @@ async function* files(directory) {
 const manifest = JSON.parse(await readFile("module.json", "utf8"));
 const pkg = JSON.parse(await readFile("package.json", "utf8"));
 assert.equal(manifest.id, "map-library"); assert.equal(manifest.version, pkg.version);
+assert.equal(manifest.version, VERSION, "Runtime, manifest and package versions must agree.");
 assert.equal(manifest.compatibility.minimum, "14"); assert.equal(manifest.compatibility.maximum, "14");
 assert(!manifest.compatibility.verified, "Do not claim runtime verification before a real Foundry test.");
 for (const asset of [...manifest.esmodules, ...manifest.styles]) assert((await stat(asset)).isFile());

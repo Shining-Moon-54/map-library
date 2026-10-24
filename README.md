@@ -6,7 +6,9 @@
 
 Eine weltübergreifende Szenenbibliothek für **Foundry VTT v14**. Karten bleiben als native Szenendaten mit Ebenen, Wänden, Licht, Tiles, Dachbildern, Zeichnungen und Regionen archiviert. Erst beim Weltimport entsteht eine neue Szene im Weltverzeichnis.
 
-**Version 0.4.0-alpha.6 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
+**Version 0.4.0-alpha.7 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
+
+**Neu in Alpha 7:** Karten einzeln oder als Auswahl löschen, nach Bestätigung in den Papierkorb verschieben und wiederherstellen. Die Medien bleiben erhalten, damit vorhandene Welt-Szenen weiter funktionieren; dies gibt noch keinen Plattenplatz frei. Google Drive und Dropbox können als mehrere Cloudprofile für manuelle Exporte eingerichtet werden. Eigene Anbieter-App-Kennung und Anmeldung erforderlich; Tokens bleiben ausschließlich im Sitzungsspeicher. Die Anbieteradapter sind gegen die aktuellen Primärquellen und mit HTTP-Doubles geprüft; echte Konto-/Browserabnahme ist noch offen. [Cloud einrichten](docs/CLOUD.md).
 
 **Korrektur in Alpha 6:** Die SVG-Prüfung akzeptiert nun auch Inline-Stile für `touch-action`, Breite/Höhe, Mindest-/Maximalgrößen und SVG-Geometrie. Dadurch werden statische Icons nicht mehr allein wegen `touch-action` oder `height` als ungesichert gemeldet. Die Dateien bleiben unverändert; aktive Inhalte und externe Ressourcen werden weiterhin abgewiesen. Die gemeldeten Stilmuster sind mit synthetischen Assets bis zum Archiv-/ZIP-/Weltimport geprüft.
 
@@ -31,12 +33,14 @@ Die Korrektur aus Alpha 2 für „(destructured parameter) is not iterable“ in
 | Eigene portable ZIPs | Export der Auswahl oder aller ausgewählten Treffer, Importinventar, Kategorienübernahme, Prüfsummen |
 | Fremde ZIPs | Inventar ohne vorgeschriebene Struktur; eindeutige Zuordnung; manuelle Auswahl bei Mehrdeutigkeit; Einzelprüfung der Karten |
 | Organisation | Verschachtelte Kategorien anlegen/umbenennen/verschieben, Metadaten, Suche, Tags, Sortierung, Favoriten, Kachel-/Listenansicht |
-| Mehrfachauswahl | Alle Treffer oder sichtbare Seite auswählen; verschieben und exportieren |
+| Mehrfachauswahl | Alle Treffer oder sichtbare Seite auswählen; verschieben, löschen/wiederherstellen und exportieren |
+| Löschen / Papierkorb | Bestätigtes Löschen einzelner/mehrerer Karten, eigener Papierkorbbereich, Wiederherstellung; Medien bleiben erhalten |
 | Versionen und Integrität | Unveränderliche Szenenrevisionen, Historie, SHA-256-Prüfung, Katalogkonflikterkennung |
 | Detect Grid | **Noch nicht implementiert**, eigener verbindlicher Meilenstein C |
 | UVTT / DD2VTT | **Noch nicht implementiert** |
 | Direkter serverseitiger HTTPS-Import | **Noch nicht implementiert**; sicherer Server-Fetch ist nicht durch die geprüften Client-APIs belegt |
-| Cloud-Konten, Cache, Kontolimits | **Noch nicht implementiert**; keine wirkungslosen Einstellungsfelder |
+| Cloudexport | Google Drive und Dropbox: mehrere Profile, eigene Appkennung, Sitzungsanmeldung, manuelle ZIP-Uploads, Profil-Speicherlimit und Prüfsummen; echte Kontoabnahme offen |
+| Cloud-Sync, Remote-Originale, Cache, Fallback | **Noch nicht implementiert**; lokale Archive bleiben vollständig erhalten |
 | Vorschau je Ebene, vollautomatischer Massenimport | **Noch offen**; derzeit erste Hintergrundvorschau und einzeln bestätigte Importkandidaten |
 
 Die vollständige Produktspezifikation bleibt verbindlich: [Projektübergabe](docs/PROJEKTUEBERGABE.md). Der abweichende Implementierungsstand ist in [Anforderungsabdeckung](docs/REQUIREMENTS.md) und [Roadmap](docs/ROADMAP.md) nachvollziehbar.
@@ -54,7 +58,7 @@ Die reguläre Installation erfolgt über Foundrys **Manifest-URL**, entsprechend
 5. Eine v14-Testwelt laden, als GM unter **Module verwalten / Manage Modules** die **Map Library** aktivieren und die Einstellungen speichern.
 6. Im Szenenverzeichnis unten **Map Library öffnen** oder unter **Spieleinstellungen → Moduleinstellungen → Map Library öffnen** wählen.
 
-Die öffentliche Manifest-URL bleibt für spätere Updates gleich. Das ZIP im [Alpha-Release](https://github.com/Shining-Moon-54/map-library/releases/tag/v0.4.0-alpha.6) ist das von Foundry automatisch geladene Installationspaket. Der Release-Workflow kann auf einem vorbereiteten Release-Zweig gestartet werden: Er legt zuerst ein tatsächliches Release an, veröffentlicht ZIP und Manifest, prüft den anonymen Zugriff und übernimmt erst danach den Stand einschließlich Update-Manifest nach `main`.
+Die öffentliche Manifest-URL bleibt für spätere Updates gleich. Das ZIP im [Alpha-Release](https://github.com/Shining-Moon-54/map-library/releases/tag/v0.4.0-alpha.7) ist das von Foundry automatisch geladene Installationspaket. Der Release-Workflow kann auf einem vorbereiteten Release-Zweig gestartet werden: Er legt zuerst ein tatsächliches Release an, veröffentlicht ZIP und Manifest, prüft den anonymen Zugriff und übernimmt erst danach den Stand einschließlich Update-Manifest nach `main`.
 
 Die Nutzung erfordert weder Node/Python auf dem Foundry-Server noch einen zusätzlichen Dienst. Node 24 und npm werden ausschließlich für Entwicklung, Tests und Paketbau benötigt. Die ZIP-Bibliothek ist im Installationspaket enthalten.
 
@@ -67,6 +71,10 @@ Die Nutzung erfordert weder Node/Python auf dem Foundry-Server noch einen zusät
 **Weltkopie:** „In Welt importieren“ → Warnungen lesen → optionale Drittanbieter-Daten und geprüfte Automatisierungen bestätigen → „Neue Szene erstellen“. Das Archivoriginal wird weder aktualisiert noch gelöscht. Neue Weltkopien werden zunächst nicht aktiviert oder in der Navigation angezeigt; bei Bedarf in Foundry ändern.
 
 **Vorlage aktualisieren:** An einer Karte „Aus Welt aktualisieren“ wählen, Quellszene auswählen und neue Revision ausdrücklich speichern. Die vorherige Szene und deren Assets bleiben erhalten. Historie und Wiederherstellung: [RECOVERY.md](docs/RECOVERY.md).
+
+**Löschen:** An der Karte „Löschen“ oder bei mehreren gewählten Karten „Auswahl löschen“ → „In Papierkorb verschieben“ bestätigen. Über **Bereich → Papierkorb** gelöschte Karten anzeigen und einzeln/als Auswahl wiederherstellen. Dateien und ältere Katalogrevisionen bleiben erhalten.
+
+**Cloudexport:** Unter „Cloud-Konten“ bzw. den Moduleinstellungen zuerst Google Drive oder Dropbox hinzufügen und nach [Anleitung](docs/CLOUD.md) verbinden. An der Karte „In Cloud exportieren“ oder „Auswahl in Cloud exportieren“ → Zielprofil → „Jetzt in Cloud exportieren“. Nach Neuladen/Ablauf erneut verbinden. Bestätigte Exporte enthalten die aktuellen Kartenrevisionen als portables ZIP, keine Tokens; kein automatischer Abgleich und keine Remote-Löschung.
 
 **Export:** Gewünschte Kategorien/Filter wählen, „Alle Treffer auswählen“, dann „Auswahl exportieren“. Ohne Filter und mit allen Treffern umfasst dies die vollständige aktuelle Bibliothek. Portable ZIPs enthalten aktuelle Kartenrevisionen; die gesamte Revisionshistorie wird durch ein Backup des persistenten Modulordners gesichert.
 
@@ -94,7 +102,7 @@ Das Installationspaket liegt anschließend unter `dist/`. `npm run vendor` aktua
 - [Architektur](docs/ARCHITECTURE.md), [ZIP-/Datenformat](docs/DATA_FORMAT.md)
 - [v14-API-Prüfung](docs/API_V14.md), [Test- und Abnahmeplan](docs/TESTING.md)
 - [Migration des Altprototyps](docs/MIGRATION.md), [Sicherheitsmodell](SECURITY.md)
-- [Cloud-Entwurf](docs/CLOUD.md), [Detect-Grid-Entwurf](docs/DETECT_GRID.md)
+- [Cloud-Einrichtung und Grenzen](docs/CLOUD.md), [Detect-Grid-Entwurf](docs/DETECT_GRID.md)
 - [Beitragen](CONTRIBUTING.md), [Änderungen](CHANGELOG.md), [Lizenzstatus](LICENSE)
 
 Lizenzentscheidung für den eigenen Projektcode: **noch offen**. Enthaltene Drittanbieter-Lizenzen bleiben gesondert gültig. Dieses Repository enthält keine fremden Karten, Kaufabenteuer, Zugangsdaten oder privaten Foundry-Weltdaten. Es wird zunächst nicht im offiziellen Foundry-Modulverzeichnis eingereicht.

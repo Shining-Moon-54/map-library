@@ -6,6 +6,14 @@
 
 **Vollständiges Versionsbackup:** Den gesamten Ordner `Data/modules/map-library/storage/` mit dem vorhandenen Foundry-/Host-Backup sichern. Er umfasst frühere Kataloge und Inhaltsrevisionen. Ein reines Weltbackup muss diesen Modulordner nicht einschließen. Backups regelmäßig auf Lesbarkeit prüfen.
 
+## Gelöschte Karten
+
+In der Bibliothek **Bereich → Papierkorb** wählen. „Wiederherstellen“ bzw. „Auswahl wiederherstellen“ setzt Karten ohne erneuten Medienimport in die Bibliothek zurück. Szenenoriginale, Assets und frühere Revisionen werden beim Löschen erhalten. Bereits importierte Welt-Szenen bleiben funktionsfähig. Die Funktion gibt keinen Plattenplatz frei; eine sichere endgültige Speicherbereinigung mit Referenzprüfung ist noch offen.
+
+## Cloudpaket wiederherstellen
+
+Das bestätigte ZIP aus Google Drive bzw. Dropbox mit der jeweiligen Anbieteroberfläche herunterladen und über **Dateien / ZIP importieren** öffnen. Prüfsummen und einzelne Importkandidaten prüfen. Kontoprofile oder Anmeldedaten werden dafür nicht benötigt. Cloudexport sichert die gewählten aktuellen Revisionen; für alle historischen Revisionen weiterhin das vollständige Versionsbackup verwenden.
+
 ## Fehlgeschlagener Upload
 
 Solange der neue Katalogsnapshot nicht vollständig geschrieben wurde, bleibt der vorherige Katalog maßgeblich. Ein neues Revisionsverzeichnis kann als unverknüpfte Dateiablage zurückbleiben. Das Modul löscht diese Dateien nicht automatisch. Vor manueller Bereinigung vollständiges Backup anlegen und prüfen, ob die Pfade von einer aktuellen Welt-Szene oder einem Katalog referenziert werden.

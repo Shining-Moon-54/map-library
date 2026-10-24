@@ -1,23 +1,18 @@
-Map Library 0.4.0-alpha.6 korrigiert zu strenge SVG-Stilprüfungen beim Sichern einer Szene.
+Map Library **0.4.0-alpha.7** ergänzt Löschen/Papierkorb und manuelle Cloudexporte nach Google Drive und Dropbox.
 
-**Korrektur:** `touch-action` und `height` wurden in Alpha 5 fälschlich als nicht unterstützte SVG-Stile abgewiesen. Die Prüfung erlaubt nun `touch-action`, Breite/Höhe, Mindest-/Maximalgrößen und SVG-Geometrie in Inline-Stilen. Damit entfallen diese Ablehnungsgründe bei statischen Foundry-Icons und Modul-Tiles. Akzeptierte SVG-Bytes bleiben unverändert; Skripte, externe Ressourcen und dynamische oder nicht erlaubte Stile werden weiterhin abgewiesen.
+- **Löschen:** Button an der Karte und für mehrere ausgewählte Karten; erst nach Bestätigung. Unter **Bereich → Papierkorb** einzeln/gemeinsam wiederherstellen. Mediendateien und Historie bleiben für vorhandene Welt-Szenen erhalten; noch keine Speicherbereinigung.
+- **Cloudexport:** **Cloud-Konten** in Bibliothek/Moduleinstellungen → Anbieter und eigenes Profil einrichten → verbinden → einzelne Karte oder Auswahl exportieren. Mehrere Konten, Profillimit in GB, frischer Nutzungsscan, neue Exportdatei und Anbieter-Prüfsummenabgleich.
+- **Einrichtung erforderlich:** Diese Alpha enthält keine gemeinsame Anbieter-App. Eigene Google-Web-OAuth-Client-ID bzw. Dropbox-App-Key einmalig erforderlich; **kein Client-Secret**. Zugangstokens bleiben nur in der laufenden Browsersitzung. Nach Neuladen/Ablauf erneut verbinden. [Einrichtung](https://github.com/Shining-Moon-54/map-library/blob/main/docs/CLOUD.md).
+- **Datenhaltung:** Archiv bleibt vollständig lokal. Keine automatische Cloud-Synchronisierung, kein Remote-Delete und kein Cloud-only-/Cachebetrieb. Geräteübergreifende Quoten sind nicht atomar reserviert. Ein abgebrochener Upload kann bereits abgeschlossen sein; Ziel vor erneutem Export prüfen.
 
-**Geprüft:** Alle 58 Tests bestehen. Neue Regressionstests prüfen die gemeldeten Stilmuster, aktive/externe Werte und eine synthetische Vier-Ebenen-Szene mit den Pfaden für `book.svg`, `daze.svg`, `sun.svg`, `explosion.svg` und `rope-coil.svg` bis zum Archiv-/ZIP-/Weltimport. Der Fehler wurde vor der Korrektur mit diesen Mustern reproduziert. Es wurden keine Foundry- oder Hersteller-Grafiken in das Repository aufgenommen. Die tatsächlichen Nutzerdateien und die echte Foundry-v14-/Canvas-Darstellung sind hier noch nicht geprüft.
+**Geprüft:** Alle 86 automatisierten Tests bestehen. 28 neue Prüfungen für Papierkorb/DOM, Profile ohne Tokenpersistenz, Kontoabgleich, GM-Rechte, Limits und konkurrierende Exporte, Dropbox-PKCE, Google-Tokenkonfiguration, paginierte Nutzungsscans, Uploadblöcke und Prüfsummenabweichungen. Je ein HTTP-Adapter-Roundtrip führt ein vollständiges Kartenpaket durch simulierten Google-/Dropbox-Upload und unabhängige Wiederaufnahme.
 
-**Weiterhin enthalten:** Statische SVG-Szenenassets, keine zusammengesetzten Modultexte als Einzeldateien, Bibliotheksbutton im Szenenverzeichnis, Sichern per Szenen-Rechtsklick, Medienkopien mit `_` statt Leerzeichen, korrektes Lesen von `%20`-Pfaden und die Collection-Korrektur. Bestehende Archive bleiben lesbar. Pro SVG gelten weiterhin 2 MiB, 10.000 Elemente und 80 Verschachtelungsebenen; der eigenständige Bildimport bleibt bei PNG/JPG/WebP.
+**Offene Abnahme:** Keine echten Cloudkonten oder lizenzierte Foundry-v14-Laufzeit in der Entwicklungsumgebung. Appregistrierungen, Kontouploads, Popup-/CORS-Verhalten und Bedienabläufe anhand `docs/TESTING.md` prüfen. Manifest weiterhin ohne `compatibility.verified`.
 
-**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.6** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
+Bisherige SVG-, Pfad-, Menü- und Collection-Korrekturen bleiben enthalten. Bestehende Archive bleiben lesbar. Offen: Detect Grid, UVTT/DD2VTT, direkter serverseitiger URL-Import, weitere Cloudanbieter, Cache/Sync/Kategorieprofile, per-Level-Vorschauen und historische Recovery-/Merge-Oberfläche. Lizenzentscheidung für eigenen Code offen; fflate separat MIT.
 
-Enthalten: native Original-Szenenarchive, lokale Assetkopien, Kategorien und Metadaten, neue World-Scene ohne Tokens, portable ZIPs mit Prüfsummen, Fremd-ZIP-Inventar und manuelle Assetzuordnung, Suche/Favoriten/Paging, unveränderliche Revisionen und Konflikterkennung.
-
-Automatisierte Daten-, Sicherheits-, API-Double- und DOM-Tests sind vorhanden. **Eine echte Foundry-v14-/Canvas-Abnahme steht noch aus.** Zunächst eine separate Testwelt verwenden. Die Runtime-Kompatibilität wird im Manifest nicht als verifiziert ausgegeben.
-
-Noch offen: Detect Grid, UVTT/DD2VTT, sicherer direkter serverseitiger URL-Import, Cloudadapter, per-Level-Vorschauen und eine Wiederherstellungsoberfläche. Die Lizenzentscheidung für den eigenen Projektcode steht noch aus; fflate ist separat MIT-lizenziert.
-
-Dieses Projekt wird mit Unterstützung von OpenAI ChatGPT entwickelt. Es enthält keine fremden Karten oder privaten Foundry-Weltdaten.
-
-Installation in Foundry über **Zusatzmodule → Modul installieren → Manifest URL**:
+**Update:** Welt beenden → Foundry-Setup → **Zusatzmodule → Map Library aktualisieren** → Welt neu laden. Anschließend muss **0.4.0-alpha.7** angezeigt werden. Installation über **Modul installieren → Manifest URL**:
 
 [https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json](https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json)
 
-Foundry lädt das in der JSON referenzierte ZIP automatisch. Assets: dieses Installationspaket, Modulmanifest und SHA256SUMS. Vollständige Test-/Sicherheitshinweise stehen in der README und docs/TESTING.md.
+Dieses Projekt wird mit Unterstützung von OpenAI ChatGPT entwickelt und enthält keine privaten Weltdaten, fremden Karten oder Zugangsdaten.

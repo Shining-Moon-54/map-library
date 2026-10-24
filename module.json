@@ -2,7 +2,7 @@
   "id": "map-library",
   "title": "Map Library",
   "description": "Mit OpenAI ChatGPT entwickelte, weltübergreifende Szenenbibliothek für Foundry VTT v14. Experimentelle Alpha.",
-  "version": "0.4.0-alpha.6",
+  "version": "0.4.0-alpha.7",
   "authors": [
     {
       "name": "Map Library contributors"

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0-alpha.7 — 2026-10-24
+
+- Löschbuttons an jeder Archivkarte und für die Auswahl. Bestätigung mit Kartennamen; veraltete Auswahlen werden abgewiesen. Bereich „Papierkorb“ mit Einzel-/Mehrfachwiederherstellung. Szenen, Medien und Historie bleiben für vorhandene Welt-Szenen erhalten; noch keine endgültige Speicherbereinigung.
+- Manueller Cloudexport für Google Drive und Dropbox: mehrere kontogebundene Profile, eigene öffentliche Anbieter-App-Kennung, Exportlimit pro Profil, Sitzungsanmeldung und frischer Nutzungsscan. „Cloud-Konten“ in Bibliothek und Moduleinstellungen. Eine eigene Appregistrierung ist in dieser Alpha erforderlich; keine gemeinsamen Anbieterkennungen enthalten.
+- Google: nur drive.file, markierte Exportablage, resumable Uploadblöcke und SHA-256-Bestätigung. Dropbox: PKCE/S256 mit einmaligem Code ohne Callbackserver, App-Folder-Unterordner, neue Uploads ohne Überschreiben und Anbieter-Content-Hash. Tokens ausschließlich im Sitzungsspeicher; keine Secrets in Katalog, Paket oder Fehlermeldungen.
+- Keine automatische Cloud-Synchronisierung, Dateilöschung oder Auslagerung. Cache, Cloud-only-Originale, Kategorieprofile und Fallback offen. Keine geräteübergreifende atomare Quotenreservierung. Einrichtung/Grenzen: docs/CLOUD.md.
+- Runtime-Versionsanzeige korrigiert und im Paketcheck mit Manifest-/Paketversion abgeglichen.
+- 86 automatisierte Tests: 28 neue Daten-, DOM-, Authentifizierungs- und HTTP-Adapterprüfungen mit vollständigen simulierten Google-/Dropbox-Export-/Wiederaufnahme-Roundtrips. Echte Kontouploads und neue Foundry-Bedienabläufe hier noch nicht praktisch abgenommen.
+
 ## 0.4.0-alpha.6 — 2026-10-24
 
 - Zu strenge SVG-Stilprüfung korrigiert: `touch-action`, `width`/`height`, `min-`/`max-`Breiten und -Höhen sowie `x`, `y`, `cx`, `cy`, `r`, `rx`, `ry` sind als statische Inline-Eigenschaften erlaubt. Die gemeldeten Ablehnungen für Foundry-Icons und `rope-coil.svg` lassen sich mit diesen Stilmustern reproduzieren und entfallen nach der Korrektur.

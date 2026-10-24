@@ -12,6 +12,10 @@
 | `scripts/foundry/storage.js` | Foundry-Datei-APIs, Rollenprüfung, Snapshotketten und Konflikte |
 | `scripts/foundry/service.js` | Prüfen → neue Dateien schreiben → Katalog abschließen; Weltimport |
 | `scripts/foundry/ui.js` | ApplicationV2, Galerie, Importprüfung, Assetzuordnung, Organisation |
+| `scripts/core/cloud.js` | Validierte öffentliche Profilfelder, Exportlimit, Dateinamen, Dropbox-Content-Hash |
+| `scripts/cloud/auth.js` | Google-Tokenmodell, Dropbox-PKCE mit einmaligem Code, keine Secrets/Refresh-Tokens |
+| `scripts/cloud/providers.js` | Anbieter-REST, paginierter Exportscan, neue Uploads, Größen-/Prüfsummenbestätigung |
+| `scripts/foundry/cloud.js` | GM-Prüfung, lokale Profilmetadaten, kontogebundene Sitzungstokens, Serialisierung |
 | `scripts/foundry/diagnostics.js` | Freiwillige, nur lesende API-Diagnose ohne Ausgabe privater Feldinhalte |
 
 ## Archivieren
@@ -51,3 +55,9 @@ Snapshots werden nicht automatisch gelöscht. Dadurch wächst der Speicherbedarf
 Start lädt Dateinamen der Katalogrevisionen und einen Metadaten-Snapshot. Keine Karte wird dafür als World-Scene angelegt. In der Galerie maximal 48 Karten, Bilder `loading=lazy`. Suche und Filter arbeiten auf Metadaten; 5.000 synthetische Einträge sind automatisiert geprüft. Das ist keine Aussage zur realen Canvas- oder Raspberry-Pi-Performance.
 
 Browserbasierte Assetpakete haben feste Arbeitsgrenzen, damit ein einzelner Import einen kleinen Server oder Client nicht durch unbeschränkte Datenmengen belastet. Große Sammlungen werden in Auswahlpaketen transportiert. Serverstreaming, Workerentlastung, 10.000+-Messungen und Thumbnail je Level folgen nach echter v14-Abnahme.
+
+## Löschen und Cloudexport
+
+Löschen setzt erst nach Bestätigung in einer neuen Katalogrevision `archived=true` und `deletedAt`. Alle ausgewählten Einträge werden vor Änderungen gegen Revision, Änderungszeit und Papierkorbstatus geprüft. Eine veraltete Auswahl wird vollständig abgewiesen. Der Papierkorb nutzt dieselben Metadaten und erhält Szenen, Medien und frühere Revisionen. Wiederherstellen setzt den Status zurück. Keine Dateilöschung: Welt-Szenen können diese Medien bereits verwenden.
+
+Cloudexport erstellt dasselbe geprüfte portable ZIP wie der lokale Export und lädt es als neue Datei hoch. Kontoverbindung, frische Speicherprüfung und Profilgrenze werden vor dem Upload geprüft. Google verwendet resumable Uploads mit 4-MiB-Blöcken und SHA-256-Bestätigung; Dropbox einen begrenzten Upload unter seinem Einzelrequestlimit und den Anbieter-Content-Hash. Fehler und Abbrüche führen nie zu einem bestätigten Erfolg. Ein möglicherweise bereits abgeschlossener Remote-Upload wird nicht automatisch gelöscht. Details und derzeit offene Integrationstests: [CLOUD.md](CLOUD.md).

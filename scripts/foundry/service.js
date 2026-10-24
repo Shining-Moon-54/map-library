@@ -55,8 +55,8 @@ export class LibraryService {
     assert(allowMissing || plan.assets.every(a => a.bytes), "Fehlende Assets ausdrücklich bestätigen oder zuordnen.");
     const { catalog } = await this.storage.load();
     const existing = updateId ? catalog.entries.find(e => e.id === updateId) : null;
-    assert(!updateId || existing && existing.revision === expectedRevision, "Vorlage wurde verändert; neue Revision vor dem Speichern prüfen.");
-    assert(allowDuplicate || updateId || !catalog.entries.some(e => e.hash === plan.hash), "Identische Szenendaten sind bereits archiviert. Dublette ausdrücklich bestätigen.");
+    assert(!updateId || existing && !existing.archived && existing.revision === expectedRevision, "Vorlage wurde verändert oder gelöscht; neue Revision vor dem Speichern prüfen.");
+    assert(allowDuplicate || updateId || !catalog.entries.some(e => !e.archived && e.hash === plan.hash), "Identische Szenendaten sind bereits archiviert. Dublette ausdrücklich bestätigen.");
     assert(catalog.categories.some(c => c.id === metadata.category), "Kategorie existiert nicht.");
     const id = existing?.id ?? uid(), revision = uid(), folder = `${ROOT}/maps/${id}/${revision}`;
     const record = {
@@ -104,10 +104,10 @@ export class LibraryService {
       abort(signal); this.permission();
       const index = current.entries.findIndex(e => e.id === id);
       if (existing) {
-        assert(index >= 0 && current.entries[index].revision === expectedRevision, "Zwischenzeitliche Vorlagenänderung erkannt. Neue Dateien sind unverknüpft erhalten.");
+        assert(index >= 0 && !current.entries[index].archived && current.entries[index].revision === expectedRevision, "Zwischenzeitliche Vorlagenänderung erkannt. Neue Dateien sind unverknüpft erhalten.");
         current.entries[index] = record;
       } else {
-        assert(allowDuplicate || !current.entries.some(e => e.hash === plan.hash), "Zwischenzeitlich wurde dieselbe Szene archiviert.");
+        assert(allowDuplicate || !current.entries.some(e => !e.archived && e.hash === plan.hash), "Zwischenzeitlich wurde dieselbe Szene archiviert.");
         current.entries.push(record);
       }
       return current;
@@ -164,6 +164,31 @@ export class LibraryService {
         const entry = catalog.entries.find(e => e.id === id); assert(entry, "Eintrag nicht gefunden.");
         Object.assign(entry, clone(changes), { updated: new Date().toISOString() });
       }
+      return catalog;
+    });
+  }
+  async setDeleted(records, deleted, { signal } = {}) {
+    this.permission(); abort(signal);
+    assert(records.length && new Set(records.map(r => r.id)).size === records.length, "Keine eindeutige Kartenauswahl.");
+    assert(typeof deleted === "boolean", "Ungültiger Papierkorbstatus.");
+    return this.storage.transaction(catalog => {
+      this.permission(); abort(signal);
+      // Validate the whole selection before changing any entry. A dialog must
+      // never delete a revision that was replaced while the dialog was open.
+      const entries = records.map(record => {
+        const entry = catalog.entries.find(e => e.id === record.id);
+        assert(entry && entry.revision === record.revision && entry.updated === record.updated &&
+          Boolean(entry.archived) === Boolean(record.archived), "Karte wurde zwischenzeitlich geändert. Bibliothek neu laden und Auswahl prüfen.");
+        assert(Boolean(entry.archived) !== deleted, "Karte befindet sich bereits im gewünschten Zustand.");
+        return entry;
+      });
+      const now = new Date().toISOString();
+      for (const entry of entries) {
+        entry.archived = deleted; entry.updated = now;
+        if (deleted) entry.deletedAt = now; else delete entry.deletedAt;
+      }
+      // Assets can be referenced by existing world scenes and older snapshots.
+      // Retain all bytes; this is an explicit, reversible catalog deletion.
       return catalog;
     });
   }

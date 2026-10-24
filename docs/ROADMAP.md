@@ -10,7 +10,7 @@ Die Projektübergabe legt den Gesamtumfang fest. Eine Etappe gilt erst nach ihre
 | B2 | Fremd-ZIP-Inventar und manuelle Zuordnung | Uneindeutige Assets werden nie ungefragt gewählt | Code/Tests vorhanden; reale große Mischarchive offen |
 | B3 | UVTT/DD2VTT und sichere HTTPS-Quellen | Wände/Licht/Raster richtig konvertiert; DNS/Redirect-SSRF-Tests bestanden | Offen |
 | C | Detect Grid vollständig gemäß eigenem Entwurf | Sichtbare Linien, Unsicherheitskandidaten, Quadrat/Hex, Zelle/3×3; nur bestätigte Änderungen | Offen |
-| D1 | Kontoprofile, Capability-Modell, erster echter Anbieter | Mehrere Konten desselben Anbieters, manuelle Sync, getestete Limits/Konflikte | Entwurf; kein Adapter implementiert |
+| D1 | Kontoprofile, Capability-Modell, erster echter Anbieter | Mehrere Konten desselben Anbieters, manuelle Sync, getestete Limits/Konflikte | Teilweise: Google-/Dropbox-Exportprofile, Anmeldung, Profilgrenzen und HTTP-Roundtriptests. Echte Konten, Sync, Cache und Fallback offen |
 | D2 | Weitere Anbieter nach Machbarkeit | Jeder Anbieter separat Ende-zu-Ende geprüft | Offen |
 | E1 | Rechte, Quoten, Konflikte, ZIP-Härtung, Prüfungen | Fehlversuche überschreiben/löschen keine Originale; echter Spielerclienttest | Isolierte Tests vorhanden; Rechte Runtime offen |
 | E2 | Lasttests, öffentliche Installationsprüfung, Wiederherstellungsoberfläche | 10.000+ Metadaten, große Levelszene, Raspberry-Pi-Messwerte, vollständige Testprotokolle | Offen |
@@ -27,6 +27,6 @@ Die Projektübergabe legt den Gesamtumfang fest. Eine Etappe gilt erst nach ihre
 
 Eine gute Aufgabe enthält Ausgangsversion/Commit, genau ein überprüfbares Ziel, betroffene Anforderungen, primäre API-Quellen und Abnahmedaten. Beispiel:
 
-> Prüfe Version 0.4.0-alpha.6 in Foundry v14 anhand docs/TESTING.md. Korrigiere nur Archivierung und Weltimport einer nativen 32-Level-Szene mit Regionen, statischen SVG-Icons sowie die beiden Szenenmenü-Zugriffe. Behalte Originale unverändert. Liefere reproduzierbaren Testbericht und eine neue Alpha; behauptete API-Kompatibilität nur nach dem tatsächlichen Test.
+> Prüfe Version 0.4.0-alpha.7 in Foundry v14 anhand docs/TESTING.md. Korrigiere nur Archivierung und Weltimport einer nativen 32-Level-Szene mit Regionen, statischen SVG-Icons sowie die beiden Szenenmenü-Zugriffe. Behalte Originale unverändert. Liefere reproduzierbaren Testbericht und eine neue Alpha; behauptete API-Kompatibilität nur nach dem tatsächlichen Test.
 
 Keine Funktion wird durch Anbieterzwang oder künstliche Freischaltungen beschränkt. Implementierte lokale Funktionen bleiben unabhängig von der Cloud nutzbar.

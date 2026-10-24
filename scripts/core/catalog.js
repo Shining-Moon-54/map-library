@@ -43,10 +43,10 @@ export function descendants(catalog, id) {
   do { previous = result.size; for (const cat of catalog.categories) if (result.has(cat.parent)) result.add(cat.id); } while (previous !== result.size);
   return result;
 }
-export function queryCatalog(catalog, { search = "", category = "", favorites = false, sort = "name", page = 0, pageSize = 48 } = {}) {
+export function queryCatalog(catalog, { search = "", category = "", favorites = false, archived = false, sort = "name", page = 0, pageSize = 48 } = {}) {
   const terms = search.toLocaleLowerCase("de").split(/\s+/).filter(Boolean);
   const cats = category ? descendants(catalog, category) : null;
-  const entries = catalog.entries.filter(e => !e.archived && (!favorites || e.favorite) && (!cats || cats.has(e.category))).filter(e => {
+  const entries = catalog.entries.filter(e => Boolean(e.archived) === Boolean(archived) && (!favorites || e.favorite) && (!cats || cats.has(e.category))).filter(e => {
     const haystack = [e.name, e.description, e.author, e.license, ...(e.tags || [])].join(" ").toLocaleLowerCase("de");
     return terms.every(t => haystack.includes(t));
   });

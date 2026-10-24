@@ -1,6 +1,8 @@
 # Tests und Abnahme
 
-Stand 24.10.2026, Version 0.4.0-alpha.6: **58 automatisierte Tests bestanden**. Ausgeführt mit Node 24.22.1. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+Stand 24.10.2026, Version 0.4.0-alpha.7: **86 automatisierte Tests bestanden**. Ausgeführt mit Node 24.22.1. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+
+28 zusätzliche Tests für Papierkorb und Cloudexport: bestätigte Einzel-/Mehrfachlöschung, Abbruch, veraltete Auswahlen, Wiederherstellung und unveränderte Mediendateien; UI-Anbieterauswahl ohne fremde Einstellungsfelder; öffentliche Profile ohne Tokenpersistenz; getrennte Konten, Rollenwechsel, erneute Kontobindung, Limits und konkurrierende Exporte; Google-Popupkonfiguration und Dropbox-PKCE; Netzwerkgrenzen, Fehlerredaktion, Pagination, Uploadblöcke und Hashabweichungen. Je ein vollständiger Google-/Dropbox-HTTP-Adapter-Roundtrip verbindet Sitzung, echtes Exportpaket, simulierten Anbieter und unabhängige Wiederaufnahme. Dies sind HTTP-Doubles, keine echten Cloudkonten.
 
 Drei neue Regressionstests prüfen Inline-Stile für `touch-action`, Größen und SVG-Geometrie einschließlich Groß-/Kleinschreibung, Leerzeichen und `!important`; aktive/externe Werte und unbekannte Eigenschaften bleiben abgewiesen. Eine synthetische Vier-Ebenen-Szene verwendet die gemeldeten Pfade `icons/svg/{book,daze,sun,explosion}.svg` und `modules/tychmaps-dotmm/assets/tiles/rope-coil.svg` mit den Stilmustern aus der Fehlermeldung. Vorschau ohne Assetwarnungen, unveränderte Medienbytes, Archivierung, ZIP-Export, Wiederaufnahme in einer unabhängigen Storage-Simulation und Weltkopie werden geprüft. Vor der Codekorrektur scheiterten Stilakzeptanz und Szenen-Roundtrip mit dem gemeldeten Ablehnungsgrund. Die tatsächlichen Foundry- und Moduldateien sind keine Testfixtures und wurden hier nicht geprüft.
 
@@ -27,6 +29,8 @@ npm run build
 | Medien/Referenzen | Levelhintergründe, Dachbilder, Zeichnungen, Tile-/Flag-Medien, Audio bei tatsächlicher Referenz, fehlende Szenenziele |
 | SVG | Statisches Profil einschließlich Inline-Geometrie/-Größen und touch-action, unveränderte Bytes, aktive/externe Inhalte abgelehnt, XML-/UTF-8-/Komplexitätsgrenzen, Archiv-/ZIP-/Weltkopie-Roundtrip |
 | JSON/Pfade | Prototype-Schlüssel, Tiefenlimit, Dokumenttyp, erkennbare Secrets, Traversal und kodierte Pfade |
+| Papierkorb | Bestätigungsdialog, Einzel-/Mehrfachlöschung, kein Medienverlust, Wiederherstellung, veraltete Auswahl, Abbruch und GM-Rechte |
+| Cloud | Google-/Dropbox-Sitzung, PKCE/Tokenmodell, Profil-/Kontogrenzen, Quoten, Pagination, Adapter-HTTP-Roundtrips, Uploadhash und Fehlerfälle; ausschließlich Doubles |
 | Katalog | Hierarchie, Umbenennen/Verschieben, Zyklusfehler, Suche und Paging mit 5.000 Metadaten |
 | ZIP | Stored/Deflate, CRC32, Headerabweichungen, Verschlüsselung, Größen-/Dateianzahl-/Expansionsschutz, Fremdzuordnung und Abbruch |
 | Roundtrip | Archiv → ZIP → zweite simulierte Bibliothek → neue simulierte World-Scene |
@@ -57,6 +61,18 @@ Einträge erst nach tatsächlicher Durchführung mit Version, Datum, Betriebssys
 | V14-13 | 10.000 Metadaten, große Karte, Pi-Hosting | Ladezeit/RAM/CPU messen, keine Tausende aktiven World-Scenes | Offen |
 | V14-14 | Abbruch und Fehler während Medienupload / Katalogabschluss | Alte Bibliothek intakt; eventuell unverknüpfte Dateien dokumentiert | Offen |
 | V14-15 | Veröffentlichtes Manifest und ZIP ohne Anmeldung laden | Korrekte anonyme Antworten, vollständiges ZIP, Manifestversion identisch | Release-Workflow führt Prüfung aus; Erfolg erst danach eintragen |
+
+## Echte neue Funktionsabnahme — noch offen
+
+| ID | Durchführung | Erwartetes Ergebnis | Stand |
+| --- | --- | --- | --- |
+| DEL-01 | Karte in realer Welt importieren; Archivkarte löschen; Papierkorb und Wiederherstellen prüfen | Bestätigung, korrekte Filter, Welt-Szene behält Medien, Wiederherstellung ohne neue Assetkopien | Offen |
+| CLD-01 | Google-Web-App für eigene Foundry-Herkunft einrichten und verbinden | Kontoauswahl, nur drive.file, richtige Kontozuordnung | Offen |
+| CLD-02 | Dropbox-App-Folder mit drei Scopes einrichten; Code-Anmeldung | PKCE-Freigabe, richtige Kontoidentität, keine Tokens in Storage/ZIP | Offen |
+| CLD-03 | Je Anbieter zwei Konten als getrennte Profile; Neuverbinden mit falschem Konto | Profile unabhängig, falsches Konto blockiert | Offen |
+| CLD-04 | Kleine und >4-MiB-Karte exportieren; Cloudpaket herunterladen und in zweiter Welt importieren | SHA-256/Content-Hash, Vollständigkeit, richtige Medien und Ebenen | Offen |
+| CLD-05 | Kleines Limit, erschöpftes Anbieterkontingent, Rollenwechsel, Netzabbruch, Tokenablauf | Keine falsche Erfolgsmeldung; lokale Originale vollständig erhalten | Offen |
+| CLD-06 | Zwei Tabs und zwei Geräte, Reverseproxy, Firefox/Chromium, blockierte Popups/CORS | Verständliche Meldungen, Geräte-Quotengrenze dokumentiert, keine automatischen Löschungen | Offen |
 
 ## Echte Testszene vorbereiten
 

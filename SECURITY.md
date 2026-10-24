@@ -29,8 +29,16 @@ Bekannte native Regionsdaten bleiben erhalten. Unbekannte Verhaltensarten und er
 
 ## Netzwerk
 
-Aktuell nur gleichursprüngliche Foundry-Dateien mit `credentials: same-origin`, ohne Redirects, Streaminggrößenlimit und Zeitlimit. Kein generischer Proxy, keine automatischen externen Assetdownloads, kein URL-Import. Damit wird kein ungesicherter Server-Fetch als vermeintlicher SSRF-Schutz eingeführt. DNS-Auflösung, Redirect-Ketten und private IP-Bereiche können mit den bisher geprüften Client-APIs nicht zuverlässig serverseitig kontrolliert werden.
+Lokale Assets: nur gleichursprüngliche Foundry-Dateien mit `credentials: same-origin`, ohne Redirects, Streaminggrößenlimit und Zeitlimit. Kein generischer Proxy, keine automatischen externen Assetdownloads, kein URL-Import. Damit wird kein ungesicherter Server-Fetch als vermeintlicher SSRF-Schutz eingeführt. DNS-Auflösung, Redirect-Ketten und private IP-Bereiche können mit den bisher geprüften Client-APIs nicht zuverlässig serverseitig kontrolliert werden.
 
 ## Meldung eines Problems
 
 Bei öffentlichen Fehlerberichten eine selbst erstellte Minimaldatei verwenden. Keine echten Kartenarchive, Zugangsdaten, signierten URLs, privaten Weltdateien oder personenbezogenen Angaben veröffentlichen. Derzeit gibt es noch keinen eingerichteten privaten Meldekanal; sensible Details bis zur Einrichtung eines solchen Kanals nicht in ein öffentliches Issue schreiben.
+
+## Cloudexport und Papierkorb
+
+Google Identity Services wird ausschließlich nach angefordertem Verbindungsaufbau von `https://accounts.google.com/gsi/client` geladen. Die Google-API erhält nur die angefragte `drive.file`-Freigabe. Dropbox verwendet PKCE/S256 mit einmaligem Autorisierungscode, App-Folder-Konfiguration und kurzlebiger Freigabe ohne Client-Secret oder Refresh-Token. Der Dropbox-Code steht nur im Verbindungsdialog und dessen Closure. Profile speichern ausschließlich validierte Metadaten einschließlich öffentlicher Appkennung und Kontozuordnung im lokalen Browser; Tokens bleiben in privaten Klassenfeldern im Arbeitsspeicher. Kein Upload dieser Daten in Foundry-Storage, ZIP oder Katalog.
+
+Cloud-Dateianfragen sind auf Google-/Dropbox-API-Origins begrenzt, senden keine Foundry-Cookies und folgen keinen Redirects. Google-Uploadadressen werden zusätzlich auf erwarteten Origin/Pfad geprüft. Keine frei eingebbaren Netzwerkziele. Providerfehlertexte und signierte Uploadadressen werden nicht in Meldungen übernommen. Exportgrenzen und Kontobindung werden vor wirksamen Uploads erneut geprüft. Andere Skripte derselben Foundry-Seite sind weiterhin dieselbe Vertrauenszone; dies ist kein geheimer Token-Tresor gegen bösartige andere Module oder Browsererweiterungen. Die echte Anbieter-/CORS-/Popupabnahme steht aus.
+
+Papierkorblöschung schreibt ausschließlich einen neuen Katalogstatus, entfernt keine Dateien und sendet keine Cloud-Löschanfragen. Es ist keine sichere Löschung vertraulicher Inhalte und keine Speicherbereinigung.

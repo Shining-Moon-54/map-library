@@ -68,3 +68,7 @@ console.log(report);
 ```
 
 Die Diagnose liest die Szene, vergleicht Original und `toCompendium(null)`, zeigt Feldnamen und Mengen und prüft, ob das Original unverändert blieb. Sie lädt nichts öffentlich hoch und legt keine Szene an. Fehler beim dokumentierten Compendium-Aufruf werden im Bericht ausgewiesen. Private Szenenwerte werden nicht in den Bericht übernommen. Dieser Bericht ist noch keine vollständige Abnahme.
+
+## Papierkorb ohne erfundene Datei-API
+
+Die geprüfte öffentliche v14-FilePicker-Schnittstelle bietet keinen allgemeinen Dateilösch-Endpunkt. Der Löschbutton verwendet deshalb eine neue Katalogrevision und bewahrt Medien, die vorhandene Welt-Szenen referenzieren können. Eine endgültige Dateibereinigung ist nicht implementiert. Cloudaktionen verwenden ausschließlich direkte dokumentierte Google-/Dropbox-Browser-APIs, keine erfundene Foundry-Server-Erweiterung; [Anbieterprüfung und Einrichtung](CLOUD.md).

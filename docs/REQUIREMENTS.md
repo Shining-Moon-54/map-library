@@ -12,6 +12,7 @@ Quelle: vollständige Projektübergabe, Abschnitte 1–14. Status: **I** impleme
 | Portable Medienbytes und Pfadumbiegung | I/T | Lokale bekannte Referenzen, Hashes, neue Modulpfade; vollständige native Feldabdeckung und Remotequellen offen |
 | Statische SVG-Szenenassets, keine Modultexte als Einzeldateien | I/T | Begrenztes SVG-Profil, unveränderte Bytes, Roundtrip- und Ablehnungstests; echte Foundry-Darstellung offen |
 | Kategorien mit Unterkategorien und Verschieben | I | Zyklusprüfung und logische Pfade ohne Medienverschiebung |
+| Löschen / Papierkorb | I/T | Einzel-/Mehrfachbestätigung, erwartete Revision/Metadaten, Wiederherstellung; Medien bleiben für Weltkopien erhalten |
 | Metadaten, Suche, Filter, Sortieren, Favoriten | I | Datenmodell/Galerie; 5.000-Metadaten-Test |
 | Thumbnail je Ebene | O | Nur erste Hintergrundvorschau; API pro Level dokumentiert |
 | Kachel/Liste, Paging, Lazy Loading | I/T | 48 Karten pro Seite; DOM-Test; reale Pi-Performance offen |
@@ -26,8 +27,9 @@ Quelle: vollständige Projektübergabe, Abschnitte 1–14. Status: **I** impleme
 | Eigenes ZIP und Fremdstrukturen | I/T | Inventar, eindeutige Zuordnung oder manuelle Auswahl, Limits; große reale Archive offen |
 | Direktes öffentliches HTTPS → Foundry-Server | O | Sichere reine Modularchitektur nicht belegt; kein Browserdownload als Erfüllung ausgegeben |
 | Detect Grid inkl. Kontextmenüs, Schwachlinien, Hex, Kalibrierung | O | Verbindlich, vollständig beschrieben in DETECT_GRID.md |
-| Anbieterprofile, mehrere Konten, Limits, Cache | O | Keine angeblich wirksamen Attrappen; Entwurf in CLOUD.md |
-| Nur manuelle Sync, keine automatische Cloudlöschung | O | Vorbedingung für jeden künftigen Adapter |
+| Anbieterprofile, mehrere Konten, manueller Cloudexport | I/T | Google Drive und Dropbox, eigene Appkennung, Sitzungsanmeldung, Kontobindung, Uploads und Prüfsummen; echte Browser-/Kontoabnahme offen |
+| Cloudlimits, Cache, Fallback | I/O | Exportlimit je Profil inkl. vollständiger sichtbarer Exportliste geprüft; Quoten über mehrere Geräte, Cache und Fallback offen |
+| Nur manuelle Cloudaktion, keine automatische Cloudlöschung | I/O | Nur explizite Uploads und Nutzungsscan; kein Remote-Delete-Endpunkt. Bidirektionaler Sync offen |
 | Alle Referenzen/Abhängigkeiten vor Weltimport prüfen | I/O | Szenen-UUIDs, Flagscopes und Automatisierungen teilweise erkannt; Journal-/Region-/Leveldetailprüfung offen |
 | GitHub-Release, anonymes Manifest und ZIP | I/T | Reproduzierbarer Paketbau + manueller Release-Workflow; erst nach erfolgreichem Lauf als publiziert behaupten |
 | Lizenzentscheidung | O | LICENSE dokumentiert ausstehende Entscheidung; fflate separat MIT |
