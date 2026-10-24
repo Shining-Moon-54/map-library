@@ -5,6 +5,10 @@ import { mediaType, imageInfo } from "../core/media.js";
 import { exportPackage } from "../core/package.js";
 import { ROOT, requireGM } from "./storage.js";
 
+// Foundry Collection's default iterator yields Module objects, not Map entries.
+const activeModuleIds = () => new Set(Array.from(globalThis.game?.modules?.values() ?? [])
+  .filter(module => module.active).map(module => module.id));
+
 export class LibraryService {
   constructor(storage, { permission = requireGM, imageInspector = imageInfo } = {}) {
     this.storage = storage; this.permission = permission; this.imageInspector = imageInspector;
@@ -40,7 +44,7 @@ export class LibraryService {
       catch { /* A thumbnail failure never discards an otherwise valid scene. */ }
     }
     const warnings = sceneWarnings(scene, {
-      modules: new Set(globalThis.game?.modules ? [...game.modules].filter(([, m]) => m.active).map(([id]) => id) : []),
+      modules: activeModuleIds(),
       sceneIds: new Set(globalThis.game?.scenes?.map(s => s.id) ?? [])
     });
     for (const asset of assets.filter(a => !a.bytes)) warnings.push({ code: "asset", message: `Asset fehlt: ${asset.source} (${asset.reason})` });
@@ -112,7 +116,7 @@ export class LibraryService {
     assert(await sha256(bytes) === record.hash, "Szenendatei verändert oder beschädigt. Weltimport abgebrochen.");
     const scene = validateScene(jsonParse(bytes));
     const warnings = sceneWarnings(scene, {
-      modules: new Set([...game.modules].filter(([, m]) => m.active).map(([id]) => id)),
+      modules: activeModuleIds(),
       sceneIds: new Set(game.scenes.map(s => s.id))
     });
     for (const asset of record.assets) {

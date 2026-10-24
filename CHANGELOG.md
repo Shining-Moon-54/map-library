@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-alpha.2 — 2026-10-24
+
+- Fehler „(destructured parameter) is not iterable“ beim Öffnen der Importvorschau behoben. `game.modules` ist eine Foundry Collection, deren Standarditerator Modulobjekte statt Schlüssel-Wert-Paaren liefert. Vorschau und Importprüfung lesen jetzt ausdrücklich die Werte und aktiven Modulkennungen.
+- Nichtleere Foundry-Collection-Doubles und ein Regressionstest für Vorschau, Archivierung und Importprüfung; aktive, deaktivierte und nicht installierte Fremdmodule werden unterschieden.
+- Release-Zweige werden erst nach Veröffentlichung und anonymer Prüfung des Installationspakets nach `main` übernommen. Der Manifest-Link bleibt unverändert.
+
+Keine Änderung des Archivformats. Eine vollständige echte Foundry-v14-/Canvas-Abnahme steht weiterhin aus.
+
 ## 0.4.0-alpha.1 — 2026-10-24
 
 Neuer, modularer Implementierungsstand unter der ID `map-library`, anhand der vollständigen Projektübergabe vom 24.10.2026. Der alte Prototyp wird nicht als fertiger Vorgänger übernommen.

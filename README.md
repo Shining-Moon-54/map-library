@@ -6,7 +6,9 @@
 
 Eine weltübergreifende Szenenbibliothek für **Foundry VTT v14**. Karten bleiben als native Szenendaten mit Ebenen, Wänden, Licht, Tiles, Dachbildern, Zeichnungen und Regionen archiviert. Erst beim Weltimport entsteht eine neue Szene im Weltverzeichnis.
 
-**Version 0.4.0-alpha.1 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
+**Version 0.4.0-alpha.2 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
+
+**Fehlerkorrektur in Alpha 2:** Die Meldung „(destructured parameter) is not iterable“ beim Öffnen der Importvorschau ist behoben. Foundrys Modulsammlung wird in der Vorschau und bei der Prüfung vor dem Weltimport korrekt ausgewertet. Zum Aktualisieren die Welt beenden, im Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt anschließend neu laden. Der Manifest-Link bleibt gleich.
 
 ## Aktueller Funktionsumfang
 
@@ -44,7 +46,7 @@ Die reguläre Installation erfolgt über Foundrys **Manifest-URL**, entsprechend
 5. Eine v14-Testwelt laden, als GM unter **Module verwalten / Manage Modules** die **Map Library** aktivieren und die Einstellungen speichern.
 6. **Map Library** unten im Fenster oder unter **Spieleinstellungen → Moduleinstellungen → Map Library öffnen** wählen.
 
-Die öffentliche Manifest-URL bleibt für spätere Updates gleich. Das ZIP im [Alpha-Release](https://github.com/Shining-Moon-54/map-library/releases/tag/v0.4.0-alpha.1) ist das von Foundry automatisch geladene Installationspaket. Der Release-Workflow legt zuerst ein tatsächliches Release an, veröffentlicht ZIP und Manifest, prüft den anonymen Zugriff und aktualisiert erst danach das stabile Update-Manifest. Die Adressen für diese Alpha wurden ohne Anmeldung geprüft.
+Die öffentliche Manifest-URL bleibt für spätere Updates gleich. Das ZIP im [Alpha-Release](https://github.com/Shining-Moon-54/map-library/releases/tag/v0.4.0-alpha.2) ist das von Foundry automatisch geladene Installationspaket. Der Release-Workflow kann auf einem vorbereiteten Release-Zweig gestartet werden: Er legt zuerst ein tatsächliches Release an, veröffentlicht ZIP und Manifest, prüft den anonymen Zugriff und übernimmt erst danach den Stand einschließlich Update-Manifest nach `main`.
 
 Die Nutzung erfordert weder Node/Python auf dem Foundry-Server noch einen zusätzlichen Dienst. Node 24 und npm werden ausschließlich für Entwicklung, Tests und Paketbau benötigt. Die ZIP-Bibliothek ist im Installationspaket enthalten.
 

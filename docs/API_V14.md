@@ -18,6 +18,7 @@ Stand: 24.10.2026. Geprüft gegen die offiziellen öffentlichen v14-Dokumentatio
 | `FilePicker.createDirectory(source,target,options)` | Modulunterordner anlegen; Fehler anschließend mit Browse verifizieren |
 | `FilePicker.uploadPersistent(packageId,path,file,body,options)` | Dokumentierter Upload in persistenten System-/Modulspeicher; keine selbst erfundene Server-API |
 | `ApplicationV2._renderHTML` / `_replaceHTML` | DOM-basierte Benutzeroberfläche ohne HTML-Einfügen fremder Namen |
+| `game.modules` / `Collection.values()` | Foundrys Collection iteriert standardmäßig Werte statt Map-Einträgen. Aktive Modulkennungen werden aus `values()` gelesen; Vorschau und Importprüfung verwenden dieselbe Auswertung |
 
 `ClientDocument.exportToJSON()` ist eine Downloadaktion; es wird nicht als JSON-Rückgabefunktion verwendet. `importFromJSON()` ist kein Ersatz für das Erstellen einer neuen Szene. Foundry-Szenenexporte bündeln die Medienbytes nicht automatisch; diese Aufgabe erledigt das Paketformat des Moduls.
 
@@ -30,6 +31,8 @@ Stand: 24.10.2026. Geprüft gegen die offiziellen öffentlichen v14-Dokumentatio
 - [FilePicker](https://foundryvtt.com/api/v14/classes/foundry.applications.apps.FilePicker.html)
 - [ApplicationV2](https://foundryvtt.com/api/v14/classes/foundry.applications.api.ApplicationV2.html)
 - [Module](https://foundryvtt.com/api/v14/classes/foundry.packages.Module.html)
+- [Collection](https://foundryvtt.com/api/v14/classes/foundry.utils.Collection.html)
+- [Game](https://foundryvtt.com/api/v14/classes/foundry.Game.html)
 - [GridData](https://foundryvtt.com/api/v14/interfaces/foundry.documents.types.GridData.html)
 - [v14-Rastertypen](https://foundryvtt.com/api/variables/CONST.GRID_TYPES.html)
 - [BaseGrid](https://foundryvtt.com/api/classes/foundry.grid.BaseGrid.html)

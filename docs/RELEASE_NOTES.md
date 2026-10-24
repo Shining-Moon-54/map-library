@@ -1,4 +1,10 @@
-Map Library 0.4.0-alpha.1 ist die erste neu aufgebaute experimentelle Alpha für Foundry VTT v14.
+Map Library 0.4.0-alpha.2 behebt den gemeldeten Fehler beim Archivieren einer Welt-Szene in Foundry VTT v14.
+
+**Behoben:** Beim Klick auf „Importvorschau öffnen“ erschien „(destructured parameter) is not iterable“. Die Auswertung der aktiven Module behandelt Foundrys Collection jetzt korrekt. Dieselbe Korrektur gilt für die Prüfung vor dem Weltimport.
+
+**Geprüft:** Der Fehler wurde automatisiert vor der Korrektur reproduziert. Alle 38 Tests bestehen mit einem nichtleeren Foundry-Collection-Double; aktive, deaktivierte und fehlende Fremdmodule werden geprüft. Das Archivformat bleibt unverändert.
+
+**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.2** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
 
 Enthalten: native Original-Szenenarchive, lokale Assetkopien, Kategorien und Metadaten, neue World-Scene ohne Tokens, portable ZIPs mit Prüfsummen, Fremd-ZIP-Inventar und manuelle Assetzuordnung, Suche/Favoriten/Paging, unveränderliche Revisionen und Konflikterkennung.
 

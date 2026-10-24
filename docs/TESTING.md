@@ -1,6 +1,8 @@
 # Tests und Abnahme
 
-Stand 24.10.2026: **37 automatisierte Tests bestanden**. Ausgeführt mit Node 24.19.0. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+Stand 24.10.2026, Version 0.4.0-alpha.2: **38 automatisierte Tests bestanden**. Ausgeführt mit Node 24.19.0. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+
+Der gemeldete Vorschaufehler „(destructured parameter) is not iterable“ wurde mit einem nichtleeren, gemäß der offiziellen API über Werte iterierenden Collection-Double reproduziert. Der Regressionstest schlug mit dem alten Service an der Modulauswertung fehl und prüft nach der Korrektur Vorschau, Archivierung und Importprüfung einschließlich aktiver, deaktivierter und fehlender Fremdmodule. Alle bestehenden Service-Tests verwenden ebenfalls eine nichtleere Modulsammlung. Die Prüfung in der tatsächlichen Installation des Nutzers steht noch aus.
 
 ## Automatisch geprüft
 
@@ -31,7 +33,7 @@ Einträge erst nach tatsächlicher Durchführung mit Version, Datum, Betriebssys
 
 | ID | Durchführung | Erwartetes Ergebnis | Stand |
 | --- | --- | --- | --- |
-| V14-01 | Installations-ZIP in separater v14-Testwelt aktivieren | Init/Ready ohne Konsolefehler, Settings und Schaltfläche sichtbar | Offen |
+| V14-01 | Über die Manifest-URL installieren und in separater v14-Testwelt aktivieren | Init/Ready ohne Konsolefehler, Settings und Schaltfläche sichtbar | Offen |
 | V14-02 | Bild mit bekanntem Raster importieren | Richtige Maße; natives Level; Rasterdaten bleiben unangetastet | Offen |
 | V14-03 | Echte Szene mit 32 Leveln, unterschiedlichen Höhen/Sichtbarkeiten, Tiles und Dächern archivieren | Vollständige native Daten, Assets und Warnungen; Original unverändert | Offen |
 | V14-04 | `toObject`, `toCompendium`, manuelles `exportToJSON` vergleichen | Tatsächliche Bereinigung dokumentiert; keine Mutationen am Original | Offen |

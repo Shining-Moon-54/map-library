@@ -33,7 +33,14 @@ export class MemoryStorage {
   async read(path) { if (!this.files.has(path)) throw new Error("Missing file"); return this.files.get(path).slice(); }
   async transaction(fn) { this.catalog = validateCatalog(await fn(structuredClone(this.catalog))); return this.catalog; }
 }
+// Foundry Collection iterates values, unlike Map's [key, value] pairs.
+// Model this documented contract so a non-empty runtime exposes API mistakes.
+export class FoundryCollection extends Map {
+  [Symbol.iterator]() { return this.values(); }
+  map(transform) { return Array.from(this.values(), transform); }
+}
 export function runtime() {
-  globalThis.game = { user: { isGM: true }, version: "14.368", modules: new Map(), scenes: [] };
+  globalThis.game = { user: { isGM: true }, version: "14.368",
+    modules: new FoundryCollection([["map-library", { id: "map-library", active: true }]]), scenes: new FoundryCollection() };
   globalThis.foundry = { utils: { randomID: () => "NewWorldScene001" } };
 }

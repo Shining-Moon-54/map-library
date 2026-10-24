@@ -14,6 +14,25 @@ function setup() {
 }
 const meta = { name: "Test map", category: "dungeons", tags: "tower, test" };
 
+test("Foundry Collection values support preview, archival and import preflight", async () => {
+  const { service, scene, mappings } = setup();
+  game.modules.set("vendor", { id: "vendor", active: true });
+  game.modules.set("disabled", { id: "disabled", active: false });
+  scene.flags.disabled = { test: true };
+  scene.flags.missing = { test: true };
+  assert.equal([...game.modules][0].id, "map-library");
+
+  const plan = await service.plan({ scene, mappings });
+  const record = await service.archive(plan, meta);
+  const imported = await service.preflight(record);
+  for (const result of [plan, imported]) {
+    const warning = scope => result.warnings.find(w => w.code === "module" && w.scope === scope);
+    assert.equal(warning("vendor").message, "Drittanbieter-Daten: vendor");
+    assert.match(warning("disabled").message, /Modul nicht aktiv/);
+    assert.match(warning("missing").message, /Modul nicht aktiv/);
+  }
+});
+
 test("archive + portable ZIP + independent library + new world copy preserves native data", async () => {
   const { storage, service, scene, mappings } = setup();
   const original = structuredClone(scene);
