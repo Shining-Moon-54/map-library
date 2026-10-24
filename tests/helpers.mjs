@@ -1,5 +1,7 @@
 import { emptyCatalog, validateCatalog } from "../scripts/core/catalog.js";
+import { DOMParser as XMLDOMParser } from "@xmldom/xmldom";
 export const png = Uint8Array.from(Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aP9sAAAAASUVORK5CYII=", "base64"));
+export const svg = new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Synthetic icon</title><path fill="#fff" d="M1 1H19V19H1Z"/></svg>');
 export function fixture() {
   return {
     _id: "OriginalScene001", name: "Synthetic tower", width: 2400, height: 1600,
@@ -40,6 +42,13 @@ export class FoundryCollection extends Map {
   map(transform) { return Array.from(this.values(), transform); }
 }
 export function runtime() {
+  // Match the browser's strict XML contract using a Node-only test parser.
+  globalThis.DOMParser = class extends XMLDOMParser {
+    constructor() { super({ onError: () => { throw new Error("Malformed XML"); } }); }
+    // Native DOMParser treats image/svg+xml as ordinary XML. xmldom adds a
+    // default SVG namespace for that MIME, so use its ordinary XML mode here.
+    parseFromString(source) { return super.parseFromString(source, "application/xml"); }
+  };
   globalThis.game = { user: { isGM: true }, version: "14.368", release: { generation: 14 },
     modules: new FoundryCollection([["map-library", { id: "map-library", active: true }]]), scenes: new FoundryCollection() };
   globalThis.foundry = { utils: { randomID: () => "NewWorldScene001" } };

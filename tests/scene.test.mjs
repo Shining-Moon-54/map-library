@@ -14,6 +14,16 @@ test("asset discovery covers all levels, roofs, tiles, drawings, media flags and
   assert.equal(assets.length, 68); assert(!assets.some(a => a.source.endsWith("actor.png")));
   assert(assets.some(a => a.source.endsWith("flag.png"))); assert(assets.some(a => a.source.endsWith("ambience.ogg")));
 });
+test("module labels and composite icon expressions are not mistaken for individual files", () => {
+  const scene = { name: "Synthetic scene", width: 10, levels: [{ background: { src: "maps/base.png" } }],
+    flags: { vendor: { value: "IA: icons/svg/sun.svg|icons/svg/sleep.svg", image: "IA: icons/svg/sun.svg|icons/svg/sleep.svg",
+      choices: "icons/svg/sun.svg|icons/svg/sleep.svg", picture: "icons/svg/book.svg", asset: "maps/My map.svg" } } };
+  const before = structuredClone(scene), assets = assetsOf(scene);
+  assert.deepEqual(assets.map(a => a.source), ["maps/base.png", "icons/svg/book.svg", "maps/My map.svg"]);
+  const copy = rewriteAssets(scene, new Map([["icons/svg/book.svg", "modules/map-library/storage/book.svg"]]));
+  assert.equal(copy.flags.vendor.picture, "modules/map-library/storage/book.svg");
+  assert.equal(copy.flags.vendor.image, scene.flags.vendor.image); assert.deepEqual(scene, before);
+});
 test("only a working copy is remapped; all usages of a repeated asset are changed", () => {
   const scene = fixture(); scene.tiles[0].texture.src = scene.levels[0].background.src;
   const mapped = rewriteAssets(scene, new Map([[scene.levels[0].background.src, "modules/map-library/storage/asset.png"]]));

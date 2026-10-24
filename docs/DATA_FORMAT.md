@@ -16,6 +16,8 @@ IDs sind zufällige Hexkennungen. Kategorien werden nicht in die physischen Spei
 
 Seit Alpha 3 wird der Basisname einer Medienkopie einmal URI-dekodiert, jedes Leerzeichen durch `_` ersetzt und auf Buchstaben, Ziffern, `.`, `_` und `-` begrenzt. Der Namensstamm umfasst höchstens 40 Unicode-Zeichen; die vollständige SHA-256-Prüfsumme und Medienendung folgen danach. Identische Bytes derselben Endung werden innerhalb einer Revision weiterhin nur einmal geschrieben. Ältere Namen nach dem Muster `<sha256>.<ext>` bleiben gültig: Leser folgen immer dem im Inventar hinterlegten Pfad und leiten ihn nicht aus einem Dateinamensmuster ab. Deshalb bleibt die Formatkennung `map-library/1` kompatibel.
 
+Seit Alpha 5 ist `.svg` mit MIME-Typ `image/svg+xml` als Szenenabhängigkeit möglich, sofern die Datei das [statische SVG-Profil](SVG.md) erfüllt. Die SVG-Bytes bleiben unverändert und erhalten dieselben Pfad-/Prüfsummenfelder wie andere Medien. In Modulflags werden nur eindeutige einzelne Dateipfade inventarisiert; zusammengesetzte Modultexte werden unverändert im nativen Szenenoriginal erhalten.
+
 ## Katalog
 
 `catalog = { format, categories, entries }`. Eine Kategorie hat `id`, `name`, `parent` (ID oder `null`). Kreisbezüge und fehlende Eltern sind ungültig. Ein Entry enthält:

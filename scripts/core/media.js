@@ -1,5 +1,6 @@
 import { MEDIA, LIMITS } from "./constants.js";
 import { assert, basename, extension } from "./util.js";
+import { validateSvg } from "./svg.js";
 
 export function archiveAssetFilename(source, hash) {
   assert(/^[a-f0-9]{64}$/.test(hash), "Ungültige Asset-Prüfsumme.");
@@ -18,6 +19,7 @@ export function mediaType(bytes, name) {
   const ext = extension(name);
   assert(MEDIA[ext], `Nicht unterstützter Medientyp: ${ext}`);
   assert(bytes.byteLength <= LIMITS.file, "Mediendatei überschreitet das 64-MiB-Limit.");
+  if (ext === "svg") { validateSvg(bytes); return MEDIA.svg; }
   const b = bytes;
   const s = (at, n) => String.fromCharCode(...b.subarray(at, at + n));
   const valid = ext === "png" ? b[0] === 137 && s(1, 3) === "PNG" && s(12, 4) === "IHDR"

@@ -47,7 +47,7 @@ export class LibraryService {
       modules: activeModuleIds(),
       sceneIds: new Set(globalThis.game?.scenes?.map(s => s.id) ?? [])
     });
-    for (const asset of assets.filter(a => !a.bytes)) warnings.push({ code: "asset", message: `Asset fehlt: ${asset.source} (${asset.reason})` });
+    for (const asset of assets.filter(a => !a.bytes)) warnings.push({ code: "asset", message: `Asset nicht gesichert: ${asset.source} (${asset.reason})` });
     return { scene, bytes, hash, assets, info, warnings, metadata: candidate.metadata ?? {}, name: candidate.name ?? scene.name, total };
   }
   async archive(plan, metadata, { signal, allowMissing = false, allowDuplicate = false, updateId = null, expectedRevision = null, progress = () => {} } = {}) {

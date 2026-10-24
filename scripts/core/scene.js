@@ -1,5 +1,13 @@
 import { MEDIA } from "./constants.js";
-import { assert, clone, extension, walk, setAt, jsonParse, jsonBytes } from "./util.js";
+import { assert, clone, extension, walk, setAt, jsonParse, jsonBytes, safePath } from "./util.js";
+
+function singleFlagPath(value) {
+  if (/[|<>\r\n]/.test(value)) return false;
+  if (/^https?:\/\//i.test(value)) {
+    try { return !/\s/.test(value) && Boolean(new URL(value)); } catch { return false; }
+  }
+  try { safePath(value); return true; } catch { return false; }
+}
 
 // Native Scene data remains authoritative. This only validates its outer shape.
 export function validateScene(value) {
@@ -31,10 +39,13 @@ export function assetsOf(scene) {
     // Tokens are never recreated. Their media are not necessary map assets.
     if (path.includes("tokens") || key === "thumb" || key === "thumbnail") continue;
     const ext = extension(value);
-    if (!MEDIA[ext] && !["gif", "avif", "bmp", "svg", "m4v", "flac", "aac", "woff", "woff2"].includes(ext)) continue;
+    if (!MEDIA[ext] && !["gif", "avif", "bmp", "m4v", "flac", "aac", "woff", "woff2"].includes(ext)) continue;
     const nativeAssetKey = /(?:src|img|image|icon|texture|background|foreground|path|file|sound|video|audio)$/i.test(key);
     const opaqueFlag = path.includes("flags") && !/^(name|text|label|description|url|href|source)$/i.test(key);
     if (!nativeAssetKey && !opaqueFlag) continue;
+    // Arbitrary module flags may contain labels or expressions ending in .svg.
+    // Keep those fields verbatim instead of fetching them as a single filename.
+    if (path.includes("flags") && !singleFlagPath(value)) continue;
     if (!found.has(value)) found.set(value, { source: value, mime: MEDIA[ext] || null, extension: ext, paths: [] });
     found.get(value).paths.push(path);
   }

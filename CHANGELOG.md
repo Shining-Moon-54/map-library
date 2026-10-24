@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0-alpha.5 — 2026-10-24
+
+- Statische SVG-Szenenassets aus Foundry und Modulen werden vor dem Upload als XML geprüft und unverändert mit SHA-256 archiviert. Ein begrenztes Profil erlaubt grafische Elemente, lokale Verweise und bestimmte inerte Editormetadaten; aktive Inhalte, externe Ressourcen und XML-Direktiven werden abgelehnt. Grenzen: 2 MiB, 10.000 Elemente und 80 Verschachtelungsebenen.
+- Zusammengesetzte Modultexte wie `IA: icons/svg/sun.svg|icons/svg/sleep.svg` werden nicht länger als einzelner Dateipfad inventarisiert. Eindeutige Dateipfade in Flags werden weiterhin kopiert und beim Weltimport umgeschrieben; die übrigen Originalflags bleiben unverändert.
+- Die Vorschau meldet abgelehnte oder nicht lesbare Dateien als „Asset nicht gesichert“ mit Ursache, statt alle Fälle als fehlende Datei zu bezeichnen. SVG-Dateien lassen sich für native Szenenreferenzen manuell nachreichen.
+- Insgesamt 55 automatisierte Tests, darunter SVG-Archiv-/Export-/Weltimport-Roundtrip, aktive/externe SVG-Inhalte, XML- und Komplexitätsgrenzen und die gemeldete zusammengesetzte Zeichenfolge. XML-Testparser nur als Entwicklungsabhängigkeit; im Modul wird der native Browserparser genutzt. Reale Foundry-/Canvas-Abnahme weiterhin offen.
+
 ## 0.4.0-alpha.4 — 2026-10-24
 
 - Schaltfläche „Map Library öffnen“ unten im Szenenverzeichnis, einschließlich separatem Szenenfenster. Bestehende Schaltflächen anderer Module bleiben erhalten; erneutes Rendern erzeugt keine doppelten Einträge.

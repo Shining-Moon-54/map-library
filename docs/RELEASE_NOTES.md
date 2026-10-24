@@ -1,14 +1,14 @@
-Map Library 0.4.0-alpha.4 ergänzt die beiden fehlenden Zugriffe auf die Szenenbibliothek.
+Map Library 0.4.0-alpha.5 ergänzt statische SVG-Szenenassets und korrigiert die fälschliche Erkennung zusammengesetzter Modultexte als Dateipfade.
 
-**Im Szenenverzeichnis:** Unten erscheint für GMs **„Map Library öffnen“**. Der Button öffnet die zentrale Bibliothek und erscheint auch im separaten Szenenfenster. Andere Modulbuttons bleiben erhalten. Die Einstellung für den schwebenden Button beeinflusst diesen Zugriff nicht.
+**SVG-Icons:** Statische SVG-Grafiken aus Foundry und Modulen werden vor dem Upload als XML geprüft und unverändert mitgesichert. Das begrenzte Profil weist aktive Inhalte, externe Ressourcen und nicht unterstützte SVG-Funktionen mit einem konkreten Grund zurück. Pro SVG gelten 2 MiB, 10.000 Elemente und 80 Verschachtelungsebenen. Es handelt sich um Unterstützung für Szenenabhängigkeiten; der eigenständige Bildimport bleibt bei PNG/JPG/WebP.
 
-**Im Rechtsklickmenü einer Welt-Szene:** **„In Map Library sichern“** öffnet direkt die Importvorschau der angeklickten Szene. Gespeichert wird erst über die Bestätigung in der Vorschau. Rechte und die Existenz der Szene werden erneut geprüft; Ordner und Kompendieneinträge werden nicht als Welt-Szenen behandelt.
+**Modultexte:** Angaben wie `IA: icons/svg/sun.svg|icons/svg/sleep.svg` werden nicht mehr als eine Datei angefordert. Eindeutige einzelne Dateipfade in Flags werden weiterhin kopiert und beim Weltimport angepasst; zusammengesetzte Texte und das native Archivoriginal bleiben unverändert. Die Vorschau meldet nicht lesbare oder abgelehnte Dateien nun als **„Asset nicht gesichert“** mit Ursache.
 
-**Geprüft:** Alle 48 Tests bestehen. Die neuen Hook-/DOM-Tests prüfen erneutes Rendern, Erhalt anderer Schaltflächen, die Auswahl der richtigen Szene, fehlende Szenen, Spielerrechte und die Registrierung vor dem ersten Szenenrendern. Ein Test öffnet die tatsächliche Modulvorschau mit Service-/Storage-Doubles und prüft, dass dabei weder archiviert noch die Quellszene verändert wird. Eine Prüfung dieser Menüs in einer echten Foundry-v14-Laufzeit steht noch aus.
+**Geprüft:** Alle 55 Tests bestehen, darunter statische SVG-Formen/Verläufe/Metadaten, aktive und externe Inhalte, XML-/UTF-8-/Komplexitätsgrenzen, SVG-Archiv-/ZIP-/Weltimport-Roundtrip und die gemeldete zusammengesetzte Zeichenfolge. Alle Testassets sind synthetisch. Die Prüfung mit den tatsächlichen Dateien des Nutzers in Foundry v14 steht noch aus.
 
-**Weiterhin enthalten:** Sichere Medienkopien mit `_` statt Leerzeichen, korrektes Lesen von `%20`-Pfaden und die Collection-Korrektur aus Alpha 2. Bestehende Archive bleiben lesbar.
+**Weiterhin enthalten:** Bibliotheksbutton im Szenenverzeichnis, Sichern per Szenen-Rechtsklick, Medienkopien mit `_` statt Leerzeichen, korrektes Lesen von `%20`-Pfaden und die Collection-Korrektur. Bestehende Archive bleiben lesbar.
 
-**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.4** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
+**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.5** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
 
 Enthalten: native Original-Szenenarchive, lokale Assetkopien, Kategorien und Metadaten, neue World-Scene ohne Tokens, portable ZIPs mit Prüfsummen, Fremd-ZIP-Inventar und manuelle Assetzuordnung, Suche/Favoriten/Paging, unveränderliche Revisionen und Konflikterkennung.
 

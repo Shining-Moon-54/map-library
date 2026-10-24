@@ -26,6 +26,8 @@ Stand: 24.10.2026. Geprüft gegen die offiziellen öffentlichen v14-Dokumentatio
 
 Lokale Szenenreferenzen können bereits URI-kodierte Dateinamen enthalten. `localURL()` prüft zuerst den Pfad, dekodiert jeden Pfadbestandteil genau einmal mit `decodeURIComponent()` und kodiert ihn mit `encodeURIComponent()` für die HTTP-Anfrage. Dadurch bleiben `%20` und UTF-8-Sequenzen korrekt, statt `%` erneut zu kodieren. Die Archivoriginale und Dateien werden dabei nicht umbenannt oder verändert. [JavaScript-Referenz: encodeURIComponent](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent), [decodeURIComponent](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent).
 
+SVG-Abhängigkeiten werden über den nativen Browser-`DOMParser` als XML geprüft, ohne den Dokumentbaum in die Seite einzufügen. Gültige SVG-Namensräume, Parserfehler und ein begrenztes statisches Profil werden vor dem Upload geprüft; keine zusätzliche Foundry-Server-API wird vorausgesetzt. Die Node-Tests verwenden einen separaten XML-Parser. [SVG-Profil](SVG.md), [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/parseFromString).
+
 ## Offizielle Quellen
 
 - [Scene](https://foundryvtt.com/api/v14/classes/foundry.documents.Scene.html)

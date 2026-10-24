@@ -10,6 +10,7 @@ Quelle: vollständige Projektübergabe, Abschnitte 1–14. Status: **I** impleme
 | Tiles, Dächer, Regionen, Zeichnungen, Flags erhalten | I/T | Original unverändert; optionale Flagübernahme auf Weltkopie; dynamische Fremdabhängigkeiten offen |
 | Keine neuen Spieltokens/Actors oder FogExploration | I/T | Tokens aus jeder Weltkopie entfernt; Actors/Fog-Dokumente nie gelesen/erstellt |
 | Portable Medienbytes und Pfadumbiegung | I/T | Lokale bekannte Referenzen, Hashes, neue Modulpfade; vollständige native Feldabdeckung und Remotequellen offen |
+| Statische SVG-Szenenassets, keine Modultexte als Einzeldateien | I/T | Begrenztes SVG-Profil, unveränderte Bytes, Roundtrip- und Ablehnungstests; echte Foundry-Darstellung offen |
 | Kategorien mit Unterkategorien und Verschieben | I | Zyklusprüfung und logische Pfade ohne Medienverschiebung |
 | Metadaten, Suche, Filter, Sortieren, Favoriten | I | Datenmodell/Galerie; 5.000-Metadaten-Test |
 | Thumbnail je Ebene | O | Nur erste Hintergrundvorschau; API pro Level dokumentiert |

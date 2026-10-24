@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { MemoryStorage, fixture, png, runtime } from "./helpers.mjs";
+import { MemoryStorage, fixture, png, svg, runtime } from "./helpers.mjs";
 import { LibraryService } from "../scripts/foundry/service.js";
 import { assetsOf } from "../scripts/core/scene.js";
 import { inspectPackage } from "../scripts/core/package.js";
@@ -13,6 +13,44 @@ function setup() {
   return { storage, service, scene, mappings };
 }
 const meta = { name: "Test map", category: "dungeons", tags: "tower, test" };
+
+test("core and module SVG icons survive archival, portable export and a new world copy", async () => {
+  runtime(); const storage = new MemoryStorage();
+  const service = new LibraryService(storage, { imageInspector: async () => null });
+  const core = "icons/svg/book.svg", module = "modules/vendor/assets/stair.svg";
+  const label = "IA: icons/svg/sun.svg|icons/svg/sleep.svg";
+  storage.files.set("worlds/test/map.png", png); storage.files.set(core, svg); storage.files.set(module, svg);
+  const scene = { name: "Synthetic icon scene", width: 20, levels: [{ background: { src: "worlds/test/map.png" } }],
+    tiles: [{ texture: { src: module } }], flags: { vendor: { icon: core, choice: label } } };
+  const before = structuredClone(scene), plan = await service.plan({ scene });
+  assert.equal(plan.assets.length, 3); assert(!plan.warnings.some(w => w.code === "asset"));
+  const record = await service.archive(plan, meta);
+  for (const asset of record.assets.filter(a => a.extension === "svg")) {
+    assert.equal(asset.mime, "image/svg+xml"); assert(asset.path.endsWith(".svg"));
+    assert.deepEqual(storage.files.get(asset.path), svg);
+  }
+  const exported = await inspectPackage(await service.export(storage.catalog, [record]));
+  const candidate = exported.candidates[0];
+  assert.deepEqual(candidate.mappings.get(core).bytes, svg); assert.deepEqual(candidate.mappings.get(module).bytes, svg);
+  const fresh = new LibraryService(new MemoryStorage(), { imageInspector: async () => null });
+  const freshPlan = await fresh.plan(candidate); assert(!freshPlan.warnings.some(w => w.code === "asset"));
+  globalThis.CONFIG = { Scene: { documentClass: { create: async data => data } } };
+  const world = await service.importToWorld(record, { includeModuleFlags: true, reviewedAutomation: true });
+  assert.equal(world.tiles[0].texture.src, record.assets.find(a => a.source === module).path);
+  assert.equal(world.flags.vendor.icon, record.assets.find(a => a.source === core).path);
+  assert.equal(world.flags.vendor.choice, label); assert.deepEqual(scene, before);
+});
+
+test("SVG rejected by the static profile cannot be uploaded by ordinary archival", async () => {
+  runtime(); const storage = new MemoryStorage(), service = new LibraryService(storage);
+  const source = "worlds/test/active.svg";
+  storage.files.set(source, new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'));
+  const scene = { name: "Unsafe SVG", width: 20, levels: [{ background: { src: source } }] };
+  const plan = await service.plan({ scene });
+  assert.equal(plan.assets[0].bytes, null); assert(plan.warnings.some(w => w.code === "asset" && /SVG/.test(w.message)));
+  await assert.rejects(() => service.archive(plan, meta), /Fehlende Assets/);
+  assert.equal(storage.uploadCount, 0); assert.equal(storage.catalog.entries.length, 0);
+});
 
 test("Foundry Collection values support preview, archival and import preflight", async () => {
   const { service, scene, mappings } = setup();

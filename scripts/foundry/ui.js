@@ -112,7 +112,7 @@ export function makeApplications(storage, service) {
         plan = await service.plan(candidate, { signal: app.controller.signal }); display();
       }));
       const supplement = node("input"); supplement.type = "file"; supplement.multiple = true;
-      supplement.accept = ".png,.jpg,.jpeg,.webp,.webm,.mp4,.ogg,.mp3,.wav,.m4a";
+      supplement.accept = ".png,.jpg,.jpeg,.webp,.svg,.webm,.mp4,.ogg,.mp3,.wav,.m4a";
       const extra = node("label", "Fehlende Dateien nachreichen: "); extra.append(supplement); mapping.append(extra);
       supplement.addEventListener("change", async () => {
         try {

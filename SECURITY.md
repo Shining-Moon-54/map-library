@@ -18,7 +18,7 @@ Jede wirksame Modulaktion prüft den aktuellen GM-Status. Diese Prüfung verhind
 - ZIP: relative normalisierte Pfade, keine Traversals, Symlinks, Verschlüsselung, ZIP64, Multipart-Archive oder widersprüchlichen Header; maximal unterstützte Kompressionsmethoden 0 und 8.
 - Vor Entpacken werden Verzeichnis und deklarierte Größen geprüft. Während des Entpackens gelten tatsächliche Bytegrenzen; jede Datei erhält einen CRC32-Abgleich. Native Pakete zusätzlich SHA-256.
 - Dateinamen aus ZIPs werden nicht als Schreibpfade übernommen. Medien werden unter neuen Modulpfaden mit SHA-256-Dateinamen hochgeladen. Fremde Skripte, Shellprogramme und Modulcode im ZIP bleiben ungenutzt.
-- Medien werden anhand von Endung und Signatur eingeschränkt; das ersetzt keinen vollständigen Medienparser. SVG und HTML werden nicht importiert. Vorschaubilder werden mit Browserbilddecoder und Canvas erzeugt.
+- Medien werden anhand von Endung und Signatur eingeschränkt; das ersetzt keinen vollständigen Medienparser. HTML wird nicht importiert. SVG-Abhängigkeiten werden mit dem nativen XML-Parser gegen ein begrenztes statisches Profil geprüft: keine aktiven SVG-/HTML-Elemente, Ereignisattribute, externen Ressourcen, Stylesheets, XML-Direktiven oder DTDs. Datei-, Element-, Attribut- und Tiefenlimits gelten zusätzlich. Akzeptierte SVG-Bytes bleiben unverändert; der Prüfer ist kein Sanitizer und fügt kein SVG-Markup in die Seite ein. Profil und Einschränkungen: [SVG.md](docs/SVG.md). Vorschaubilder werden mit Browserbilddecoder und Canvas erzeugt.
 - Keine automatische Änderung eines bestehenden Archivoriginals. Kataloge und Vorlagenrevisionen sind unveränderliche neue Dateien. Keine automatischen Originaldatei-Löschungen.
 
 ## Automatisierung in Szenen
