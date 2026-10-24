@@ -8,4 +8,8 @@ Noch offen: Detect Grid, UVTT/DD2VTT, sicherer direkter serverseitiger URL-Impor
 
 Dieses Projekt wird mit Unterstützung von OpenAI ChatGPT entwickelt. Es enthält keine fremden Karten oder privaten Foundry-Weltdaten.
 
-Assets: Installations-ZIP, Modulmanifest und SHA256SUMS. Installation und vollständige Test-/Sicherheitshinweise stehen in der README und docs/TESTING.md.
+Installation in Foundry über **Zusatzmodule → Modul installieren → Manifest URL**:
+
+[https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json](https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json)
+
+Foundry lädt das in der JSON referenzierte ZIP automatisch. Assets: dieses Installationspaket, Modulmanifest und SHA256SUMS. Vollständige Test-/Sicherheitshinweise stehen in der README und docs/TESTING.md.

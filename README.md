@@ -33,12 +33,18 @@ Die vollständige Produktspezifikation bleibt verbindlich: [Projektübergabe](do
 
 ## Installation
 
-1. Installierbares ZIP aus einem veröffentlichten GitHub-Prerelease herunterladen oder mit `npm ci && npm run build` selbst bauen.
-2. ZIP so entpacken, dass `<Foundry-UserData>/Data/modules/map-library/module.json` existiert.
-3. Foundry neu starten und **Map Library** in einer v14-Testwelt aktivieren.
-4. Als GM **Map Library** unten im Fenster oder unter **Spieleinstellungen → Moduleinstellungen → Map Library öffnen** wählen.
+Die reguläre Installation erfolgt über Foundrys **Manifest-URL**, entsprechend der [offiziellen Modul-Anleitung](https://foundryvtt.com/article/modules/).
 
-Ein veröffentlichtes Release stellt zusätzlich `module.json` für Foundrys Manifest-Installation bereit. Solange noch kein Release existiert, enthält das Quellmanifest **keine erfundenen Download-/Update-Adressen**. Der Release-Workflow legt zuerst ein tatsächliches Release an, lädt ZIP und Manifest hoch und prüft den anonymen Zugriff. Erst danach veröffentlicht er die stabile Update-Adresse im Quellmanifest.
+**Installationslink:** [https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json](https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json)
+
+1. Im Foundry-Setup **Zusatzmodule / Add-on Modules** öffnen.
+2. **Modul installieren / Install Module** anklicken.
+3. Den obigen Installationslink in das Feld **Manifest URL** einfügen und **Installieren** wählen.
+4. Foundry liest die `module.json`, lädt das dort unter `download` angegebene ZIP automatisch herunter und entpackt das Modul selbst.
+5. Eine v14-Testwelt laden, als GM unter **Module verwalten / Manage Modules** die **Map Library** aktivieren und die Einstellungen speichern.
+6. **Map Library** unten im Fenster oder unter **Spieleinstellungen → Moduleinstellungen → Map Library öffnen** wählen.
+
+Die öffentliche Manifest-URL bleibt für spätere Updates gleich. Das ZIP im [Alpha-Release](https://github.com/Shining-Moon-54/map-library/releases/tag/v0.4.0-alpha.1) ist das von Foundry automatisch geladene Installationspaket. Der Release-Workflow legt zuerst ein tatsächliches Release an, veröffentlicht ZIP und Manifest, prüft den anonymen Zugriff und aktualisiert erst danach das stabile Update-Manifest. Die Adressen für diese Alpha wurden ohne Anmeldung geprüft.
 
 Die Nutzung erfordert weder Node/Python auf dem Foundry-Server noch einen zusätzlichen Dienst. Node 24 und npm werden ausschließlich für Entwicklung, Tests und Paketbau benötigt. Die ZIP-Bibliothek ist im Installationspaket enthalten.
 
