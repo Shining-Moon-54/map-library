@@ -38,6 +38,7 @@ test("archive + portable ZIP + independent library + new world copy preserves na
   const original = structuredClone(scene);
   const plan = await service.plan({ scene, mappings }); const record = await service.archive(plan, meta);
   assert.deepEqual(scene, original); assert.equal(storage.catalog.entries.length, 1);
+  assert.equal(new Set(record.assets.filter(a => a.extension === "png").map(a => a.path)).size, 1);
   const zip = await service.export(storage.catalog, [record]); const parsed = await inspectPackage(zip);
   assert(parsed.own); assert.equal(parsed.candidates.length, 1);
   const fresh = new MemoryStorage(); const next = new LibraryService(fresh, { imageInspector: async () => null });

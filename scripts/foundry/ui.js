@@ -88,6 +88,7 @@ export function makeApplications(storage, service) {
       };
       display();
       mapping.append(node("h3", "Assetzuordnung"));
+      mapping.append(node("p", "Dateikopien erhalten Unterstriche statt Leerzeichen. Beim Weltimport werden die Verweise automatisch angepasst.", "ml-note"));
       const selectors = new Map();
       for (const asset of assetsOf(candidate.scene)) {
         const select = field(mapping, asset.source, "asset", candidate.mappings?.get(asset.source)?.name || "", {

@@ -1,7 +1,7 @@
 import { FORMAT, MEDIA } from "./constants.js";
 import { assert, safePath, jsonParse, jsonBytes, sha256, basename, extension, abort } from "./util.js";
 import { assetsOf, validateScene, simpleScene } from "./scene.js";
-import { mediaType, imageInfo } from "./media.js";
+import { mediaType, imageInfo, archiveAssetFilename } from "./media.js";
 import { packZip, unpackZip } from "./zip.js";
 
 export async function exportPackage(catalog, records, read, { signal, progress = () => {} } = {}) {
@@ -21,12 +21,15 @@ export async function exportPackage(catalog, records, read, { signal, progress =
     assert(await sha256(scene) === record.hash, "Szenen-Prüfsumme stimmt nicht; Export abgebrochen.");
     const portable = { ...record, scene: `${folder}/scene.json`, thumbnail: null, assets: [] };
     add(portable.scene, scene);
+    const assetPaths = new Map();
     for (const asset of record.assets) {
       abort(signal);
       if (!asset.path) { portable.assets.push({ ...asset, path: null }); continue; }
       const bytes = await read(asset.path, signal);
       assert(await sha256(bytes) === asset.hash, "Asset-Prüfsumme stimmt nicht; Export abgebrochen.");
-      const path = `${folder}/assets/${asset.hash}.${asset.extension}`;
+      const key = `${asset.hash}.${asset.extension}`;
+      const path = assetPaths.get(key) ?? `${folder}/assets/${archiveAssetFilename(asset.source, asset.hash)}`;
+      assetPaths.set(key, path);
       add(path, bytes); portable.assets.push({ ...asset, path });
     }
     if (record.thumbnail) {

@@ -1,7 +1,7 @@
 import { ID, VERSION, LIMITS } from "../core/constants.js";
 import { assert, uid, jsonBytes, jsonParse, sha256, safePath, publicSourceURL, abort, clone, walk, setAt } from "../core/util.js";
 import { validateScene, assetsOf, imageSource, rewriteAssets, prepareWorldCopy, sceneWarnings } from "../core/scene.js";
-import { mediaType, imageInfo } from "../core/media.js";
+import { mediaType, imageInfo, archiveAssetFilename } from "../core/media.js";
 import { exportPackage } from "../core/package.js";
 import { ROOT, requireGM } from "./storage.js";
 
@@ -78,13 +78,17 @@ export class LibraryService {
     // Every write has a fresh revision path. Failure leaves unreferenced files,
     // never an overwritten scene. Catalog commit is the only visibility point.
     await this.storage.upload(record.scene, plan.bytes);
-    const uploaded = new Set();
+    const uploaded = new Map();
     for (const [index, asset] of plan.assets.entries()) {
       abort(signal); this.permission();
       let path = null;
       if (asset.bytes) {
-        path = `${folder}/assets/${asset.hash}.${asset.extension}`;
-        if (!uploaded.has(path)) { await this.storage.upload(path, asset.bytes, asset.mime); uploaded.add(path); }
+        const key = `${asset.hash}.${asset.extension}`;
+        path = uploaded.get(key);
+        if (!path) {
+          path = `${folder}/assets/${archiveAssetFilename(asset.source, asset.hash)}`;
+          await this.storage.upload(path, asset.bytes, asset.mime); uploaded.set(key, path);
+        }
       }
       record.assets.push({ source: asset.source, path, hash: asset.hash ?? null, extension: asset.extension,
         mime: asset.mime, bytes: asset.bytes?.length ?? 0, missing: !path });

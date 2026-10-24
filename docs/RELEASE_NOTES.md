@@ -1,8 +1,10 @@
-Map Library 0.4.0-alpha.3 behebt falsche Meldungen über fehlende lokale Assets bei Dateipfaden mit Leerzeichen.
+Map Library 0.4.0-alpha.3 speichert Medienkopien mit Unterstrichen statt Leerzeichen und behebt falsche 404-Fehler bei kodierten Dateipfaden.
+
+**Neu beim Sichern:** Jedes Leerzeichen im Dateinamen einer Medienkopie wird automatisch durch `_` ersetzt, auch bei `%20` im Quellpfad. Die Kopien erhalten einen lesbaren Namen mit zusätzlicher Prüfsumme. Die Regel gilt auch für portable Exporte; beim Weltimport werden die Verweise automatisch angepasst. Quelldateien der laufenden Welt und native Archivoriginale bleiben unverändert. Bestehende Archive bleiben lesbar.
 
 **Behoben:** Foundry hinterlegt Leerzeichen häufig als `%20` in Szenenreferenzen. Das Modul kodierte diese Zeichen bisher erneut zu `%2520` und erhielt dadurch einen 404-Fehler. Lokale Pfadbestandteile werden jetzt genau einmal dekodiert und anschließend für die HTTP-Anfrage kodiert. Rohe, kodierte und gemischte Leerzeichen sowie Umlaute funktionieren damit ohne Umbenennen der Dateien. Originaldateien und native Archivdaten bleiben unverändert.
 
-**Geprüft:** Die falsche URL und der fehlgeschlagene Assetzugriff wurden vor der Korrektur reproduziert. Alle 41 Tests bestehen. Ein Integrationstest archiviert eine Datei mit kodiertem Leerzeichen über das simulierte Foundry-Dateisystem, exportiert sie portabel und erstellt eine neue Weltkopie. Tests für Pfadschutz, Umlaute, reservierte Dateinamenzeichen und wörtliche Prozentzeichen sind enthalten. Das Archivformat bleibt unverändert; die Collection-Korrektur aus Alpha 2 ist weiterhin enthalten.
+**Geprüft:** Die falsche URL und der fehlgeschlagene Assetzugriff wurden vor der Korrektur reproduziert. Alle 43 Tests bestehen. Ein Integrationstest archiviert eine Datei mit kodiertem Leerzeichen über das simulierte Foundry-Dateisystem, prüft die Namen mit Unterstrichen, exportiert sie portabel und erstellt eine neue Weltkopie mit angepassten Verweisen. Tests für Pfadschutz, Umlaute, reservierte Dateinamenzeichen, wörtliche Prozentzeichen, Namenslängen und eindeutige Namen sind enthalten. Das Archivformat bleibt kompatibel; die Collection-Korrektur aus Alpha 2 ist weiterhin enthalten.
 
 **Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.3** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
 

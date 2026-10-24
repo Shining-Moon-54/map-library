@@ -2,9 +2,10 @@
 
 ## 0.4.0-alpha.3 — 2026-10-24
 
+- Beim Sichern ersetzen Medienkopien jedes Leerzeichen im Dateinamen durch `_`, einschließlich URI-kodiertem `%20`. Die Namen sind lesbar und enthalten die vollständige Prüfsumme. Portable Exporte verwenden dieselbe Regel, identische Medienbytes bleiben dedupliziert und Weltkopien verweisen auf die neuen Pfade.
 - Lokale Medienpfade mit Leerzeichen und bereits kodierten URI-Zeichen werden genau einmal kodiert. `%20` wird nicht mehr fälschlich zu `%2520`; dadurch verursachte 404-Fehler beim Archivieren sind behoben. Originaldateien und native Szenenreferenzen bleiben erhalten.
-- Drei Regressionstests für rohe/kodierte/gemischte Pfade, Umlaute und reservierte Dateinamenzeichen, unveränderte Pfadschutzprüfungen sowie Archivierung → portabler Export → Weltimport mit einem kodierten Serverdateinamen.
-- Insgesamt 41 automatisierte Tests. Das Archivformat bleibt unverändert; eine vollständige echte Foundry-v14-/Canvas-Abnahme steht weiterhin aus.
+- Fünf Regressionstests für rohe/kodierte/gemischte Pfade, Umlaute und reservierte Dateinamenzeichen, unveränderte Pfadschutzprüfungen, sichere Namen ohne Leerzeichen sowie Archivierung → portabler Export → Weltimport mit einem kodierten Serverdateinamen.
+- Insgesamt 43 automatisierte Tests. Das Archivformat bleibt kompatibel; eine vollständige echte Foundry-v14-/Canvas-Abnahme steht weiterhin aus.
 
 ## 0.4.0-alpha.2 — 2026-10-24
 

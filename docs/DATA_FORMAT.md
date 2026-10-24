@@ -9,10 +9,12 @@ Formatkennung: `map-library/1`. Szenendaten selbst behalten das native Foundry-v
 | `catalogs/c.<revision>.<parent>.json` | Unveränderlicher Katalog-Snapshot mit `revision`, `parent`, `created`, `catalog` |
 | `maps/<entry-id>/<revision>/scene.json` | Unveränderte native Quellszene nach JSON-Serialisierung |
 | `maps/<entry-id>/<revision>/metadata.json` | Metadaten und Assetinventar dieser Archivierung |
-| `maps/<entry-id>/<revision>/assets/<sha256>.<ext>` | Erfasste Medienbytes |
+| `maps/<entry-id>/<revision>/assets/<name>_<sha256>.<ext>` | Erfasste Medienbytes mit Namen ohne Leerzeichen |
 | `maps/<entry-id>/<revision>/thumbnail.webp` | Optionales kleines Vorschaubild |
 
 IDs sind zufällige Hexkennungen. Kategorien werden nicht in die physischen Speicherpfade eingebaut. Dadurch verschiebt eine Kategorieänderung keine Medien und beschädigt keine aktiven Weltkopien.
+
+Seit Alpha 3 wird der Basisname einer Medienkopie einmal URI-dekodiert, jedes Leerzeichen durch `_` ersetzt und auf Buchstaben, Ziffern, `.`, `_` und `-` begrenzt. Der Namensstamm umfasst höchstens 40 Unicode-Zeichen; die vollständige SHA-256-Prüfsumme und Medienendung folgen danach. Identische Bytes derselben Endung werden innerhalb einer Revision weiterhin nur einmal geschrieben. Ältere Namen nach dem Muster `<sha256>.<ext>` bleiben gültig: Leser folgen immer dem im Inventar hinterlegten Pfad und leiten ihn nicht aus einem Dateinamensmuster ab. Deshalb bleibt die Formatkennung `map-library/1` kompatibel.
 
 ## Katalog
 
@@ -45,7 +47,7 @@ Ein ZIP besitzt genau die oberste Produktebene `Map-Library/`. Darunter:
 | `checksums.json` | Objekt `relativer Paketpfad → SHA-256` für jede Datei außer sich selbst |
 | `maps/<id>/<revision>/scene.json` | Native Original-JSON |
 | `maps/<id>/<revision>/metadata.json` | Portabler Entry |
-| `maps/<id>/<revision>/assets/<hash>.<ext>` | Medienbytes |
+| `maps/<id>/<revision>/assets/<name>_<hash>.<ext>` | Medienbytes mit derselben Namensregel wie im lokalen Archiv |
 | `maps/<id>/<revision>/thumbnail.webp` | Optionale Vorschau |
 
 Das Inventar ordnet **ursprüngliche Szenenreferenz → Paketdatei** zu. Beim erneuten Archivieren werden neue lokale Modulpfade vergeben. Bei Weltimport werden nur die Referenzen auf einer Arbeitskopie geändert. Kein Modulcode, keine Anbietertokens, keine Pflicht-Cloudkonfiguration im Paket.

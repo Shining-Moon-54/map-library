@@ -8,7 +8,7 @@ Eine weltübergreifende Szenenbibliothek für **Foundry VTT v14**. Karten bleibe
 
 **Version 0.4.0-alpha.3 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
 
-**Fehlerkorrektur in Alpha 3:** Lokale Assetpfade mit Leerzeichen oder bereits kodiertem `%20` werden beim Lesen korrekt aufgelöst. Die doppelte Kodierung zu `%2520`, die zu falschen 404-Fehlern führte, ist behoben. Dateien müssen dafür nicht umbenannt werden. Zum Aktualisieren die Welt beenden, im Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt anschließend neu laden. Der Manifest-Link bleibt gleich.
+**Änderungen in Alpha 3:** Beim Sichern werden Leerzeichen in den Dateinamen der Medienkopien automatisch durch `_` ersetzt, auch wenn sie im Quellpfad als `%20` stehen. Lesbare Namen erhalten zusätzlich eine Prüfsumme für eindeutige Zuordnungen; beim Weltimport werden die Verweise auf die Kopien angepasst. Die Quelldateien der laufenden Welt und das native Archivoriginal bleiben unverändert. Außerdem ist die doppelte URL-Kodierung zu `%2520`, die zu falschen 404-Fehlern führte, behoben. Zum Aktualisieren die Welt beenden, im Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt anschließend neu laden. Der Manifest-Link bleibt gleich.
 
 Die Korrektur aus Alpha 2 für „(destructured parameter) is not iterable“ in Vorschau und Importprüfung ist weiterhin enthalten.
 

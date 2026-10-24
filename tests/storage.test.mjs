@@ -63,9 +63,13 @@ test("encoded server filenames survive archive, portable export and world import
   assert.deepEqual(plan.assets[0].bytes, png);
   assert(!plan.warnings.some(w => w.code === "asset"));
   const record = await service.archive(plan, { name: scene.name, category: "uncategorized" });
+  assert.match(record.assets[0].path, /\/Map_01_[a-f0-9]{64}\.png$/);
+  assert(!/\s|%20/i.test(record.assets[0].path));
+  assert.deepEqual(files.get("worlds/test/Test Scene/Map 01.png"), png);
   const exported = await inspectPackage(await service.export((await storage.load()).catalog, [record]));
   assert.equal(exported.candidates[0].scene.levels[0].background.src, source);
   assert.deepEqual(exported.candidates[0].mappings.get(source).bytes, png);
+  assert.match(exported.candidates[0].metadata.assets[0].path, /\/Map_01_[a-f0-9]{64}\.png$/);
   globalThis.CONFIG = { Scene: { documentClass: { create: async data => data } } };
   const imported = await service.importToWorld(record);
   assert.equal(imported.levels[0].background.src, record.assets[0].path);

@@ -1,5 +1,18 @@
 import { MEDIA, LIMITS } from "./constants.js";
-import { assert, extension } from "./util.js";
+import { assert, basename, extension } from "./util.js";
+
+export function archiveAssetFilename(source, hash) {
+  assert(/^[a-f0-9]{64}$/.test(hash), "Ungültige Asset-Prüfsumme.");
+  const ext = extension(source);
+  assert(MEDIA[ext], `Nicht unterstützter Medientyp: ${ext}`);
+  let name = basename(source);
+  try { name = decodeURIComponent(name); } catch { /* A supplied file can have a literal percent sign. */ }
+  // One underscore for every space, including encoded spaces. Other unsafe
+  // filename characters are replaced too; keep the full hash for uniqueness.
+  const stem = Array.from(name.slice(0, -(ext.length + 1)).replace(/[^\p{L}\p{N}._-]/gu, "_"))
+    .slice(0, 40).join("") || "asset";
+  return `${stem}_${hash}.${ext}`;
+}
 
 export function mediaType(bytes, name) {
   const ext = extension(name);
