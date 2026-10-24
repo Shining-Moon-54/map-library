@@ -1,14 +1,12 @@
-Map Library 0.4.0-alpha.5 ergänzt statische SVG-Szenenassets und korrigiert die fälschliche Erkennung zusammengesetzter Modultexte als Dateipfade.
+Map Library 0.4.0-alpha.6 korrigiert zu strenge SVG-Stilprüfungen beim Sichern einer Szene.
 
-**SVG-Icons:** Statische SVG-Grafiken aus Foundry und Modulen werden vor dem Upload als XML geprüft und unverändert mitgesichert. Das begrenzte Profil weist aktive Inhalte, externe Ressourcen und nicht unterstützte SVG-Funktionen mit einem konkreten Grund zurück. Pro SVG gelten 2 MiB, 10.000 Elemente und 80 Verschachtelungsebenen. Es handelt sich um Unterstützung für Szenenabhängigkeiten; der eigenständige Bildimport bleibt bei PNG/JPG/WebP.
+**Korrektur:** `touch-action` und `height` wurden in Alpha 5 fälschlich als nicht unterstützte SVG-Stile abgewiesen. Die Prüfung erlaubt nun `touch-action`, Breite/Höhe, Mindest-/Maximalgrößen und SVG-Geometrie in Inline-Stilen. Damit entfallen diese Ablehnungsgründe bei statischen Foundry-Icons und Modul-Tiles. Akzeptierte SVG-Bytes bleiben unverändert; Skripte, externe Ressourcen und dynamische oder nicht erlaubte Stile werden weiterhin abgewiesen.
 
-**Modultexte:** Angaben wie `IA: icons/svg/sun.svg|icons/svg/sleep.svg` werden nicht mehr als eine Datei angefordert. Eindeutige einzelne Dateipfade in Flags werden weiterhin kopiert und beim Weltimport angepasst; zusammengesetzte Texte und das native Archivoriginal bleiben unverändert. Die Vorschau meldet nicht lesbare oder abgelehnte Dateien nun als **„Asset nicht gesichert“** mit Ursache.
+**Geprüft:** Alle 58 Tests bestehen. Neue Regressionstests prüfen die gemeldeten Stilmuster, aktive/externe Werte und eine synthetische Vier-Ebenen-Szene mit den Pfaden für `book.svg`, `daze.svg`, `sun.svg`, `explosion.svg` und `rope-coil.svg` bis zum Archiv-/ZIP-/Weltimport. Der Fehler wurde vor der Korrektur mit diesen Mustern reproduziert. Es wurden keine Foundry- oder Hersteller-Grafiken in das Repository aufgenommen. Die tatsächlichen Nutzerdateien und die echte Foundry-v14-/Canvas-Darstellung sind hier noch nicht geprüft.
 
-**Geprüft:** Alle 55 Tests bestehen, darunter statische SVG-Formen/Verläufe/Metadaten, aktive und externe Inhalte, XML-/UTF-8-/Komplexitätsgrenzen, SVG-Archiv-/ZIP-/Weltimport-Roundtrip und die gemeldete zusammengesetzte Zeichenfolge. Alle Testassets sind synthetisch. Die Prüfung mit den tatsächlichen Dateien des Nutzers in Foundry v14 steht noch aus.
+**Weiterhin enthalten:** Statische SVG-Szenenassets, keine zusammengesetzten Modultexte als Einzeldateien, Bibliotheksbutton im Szenenverzeichnis, Sichern per Szenen-Rechtsklick, Medienkopien mit `_` statt Leerzeichen, korrektes Lesen von `%20`-Pfaden und die Collection-Korrektur. Bestehende Archive bleiben lesbar. Pro SVG gelten weiterhin 2 MiB, 10.000 Elemente und 80 Verschachtelungsebenen; der eigenständige Bildimport bleibt bei PNG/JPG/WebP.
 
-**Weiterhin enthalten:** Bibliotheksbutton im Szenenverzeichnis, Sichern per Szenen-Rechtsklick, Medienkopien mit `_` statt Leerzeichen, korrektes Lesen von `%20`-Pfaden und die Collection-Korrektur. Bestehende Archive bleiben lesbar.
-
-**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.5** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
+**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.6** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
 
 Enthalten: native Original-Szenenarchive, lokale Assetkopien, Kategorien und Metadaten, neue World-Scene ohne Tokens, portable ZIPs mit Prüfsummen, Fremd-ZIP-Inventar und manuelle Assetzuordnung, Suche/Favoriten/Paging, unveränderliche Revisionen und Konflikterkennung.
 

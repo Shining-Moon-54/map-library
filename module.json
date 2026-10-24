@@ -2,7 +2,7 @@
   "id": "map-library",
   "title": "Map Library",
   "description": "Mit OpenAI ChatGPT entwickelte, weltübergreifende Szenenbibliothek für Foundry VTT v14. Experimentelle Alpha.",
-  "version": "0.4.0-alpha.5",
+  "version": "0.4.0-alpha.6",
   "authors": [
     {
       "name": "Map Library contributors"
@@ -24,6 +24,6 @@
   },
   "url": "https://github.com/Shining-Moon-54/map-library",
   "manifest": "https://raw.githubusercontent.com/Shining-Moon-54/map-library/main/module.json",
-  "download": "https://github.com/Shining-Moon-54/map-library/releases/download/v0.4.0-alpha.5/map-library-v0.4.0-alpha.5.zip",
+  "download": "https://github.com/Shining-Moon-54/map-library/releases/download/v0.4.0-alpha.6/map-library-v0.4.0-alpha.6.zip",
   "changelog": "https://github.com/Shining-Moon-54/map-library/blob/main/CHANGELOG.md"
 }

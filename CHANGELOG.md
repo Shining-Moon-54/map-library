@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0-alpha.6 — 2026-10-24
+
+- Zu strenge SVG-Stilprüfung korrigiert: `touch-action`, `width`/`height`, `min-`/`max-`Breiten und -Höhen sowie `x`, `y`, `cx`, `cy`, `r`, `rx`, `ry` sind als statische Inline-Eigenschaften erlaubt. Die gemeldeten Ablehnungen für Foundry-Icons und `rope-coil.svg` lassen sich mit diesen Stilmustern reproduzieren und entfallen nach der Korrektur.
+- Keine Veränderung der akzeptierten SVG-Bytes und keine Lockerung der Prüfungen gegen Skripte, externe Ressourcen, CSS-Escapes oder dynamische Werte. Nicht erlaubte Stile bleiben abgewiesen.
+- Insgesamt 58 automatisierte Tests. Drei neue Regressionstests prüfen die Stile, weiterhin abgewiesene aktive/externe Werte und eine synthetische Vier-Ebenen-Szene mit den fünf gemeldeten Iconpfaden bis zum Archiv-/ZIP-/Weltimport. Reale Dateien und die Foundry-/Canvas-Darstellung sind weiterhin nicht in dieser Entwicklungsumgebung geprüft.
+
 ## 0.4.0-alpha.5 — 2026-10-24
 
 - Statische SVG-Szenenassets aus Foundry und Modulen werden vor dem Upload als XML geprüft und unverändert mit SHA-256 archiviert. Ein begrenztes Profil erlaubt grafische Elemente, lokale Verweise und bestimmte inerte Editormetadaten; aktive Inhalte, externe Ressourcen und XML-Direktiven werden abgelehnt. Grenzen: 2 MiB, 10.000 Elemente und 80 Verschachtelungsebenen.

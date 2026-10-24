@@ -1,6 +1,8 @@
 # Tests und Abnahme
 
-Stand 24.10.2026, Version 0.4.0-alpha.5: **55 automatisierte Tests bestanden**. Ausgeführt mit Node 24.19.0. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+Stand 24.10.2026, Version 0.4.0-alpha.6: **58 automatisierte Tests bestanden**. Ausgeführt mit Node 24.22.1. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+
+Drei neue Regressionstests prüfen Inline-Stile für `touch-action`, Größen und SVG-Geometrie einschließlich Groß-/Kleinschreibung, Leerzeichen und `!important`; aktive/externe Werte und unbekannte Eigenschaften bleiben abgewiesen. Eine synthetische Vier-Ebenen-Szene verwendet die gemeldeten Pfade `icons/svg/{book,daze,sun,explosion}.svg` und `modules/tychmaps-dotmm/assets/tiles/rope-coil.svg` mit den Stilmustern aus der Fehlermeldung. Vorschau ohne Assetwarnungen, unveränderte Medienbytes, Archivierung, ZIP-Export, Wiederaufnahme in einer unabhängigen Storage-Simulation und Weltkopie werden geprüft. Vor der Codekorrektur scheiterten Stilakzeptanz und Szenen-Roundtrip mit dem gemeldeten Ablehnungsgrund. Die tatsächlichen Foundry- und Moduldateien sind keine Testfixtures und wurden hier nicht geprüft.
 
 Sieben neue Tests prüfen statische SVG-Assets einschließlich Verläufen und inerten Editormetadaten, Ablehnung aktiver/externer Inhalte und CSS-Umgehungsversuche, XML-/UTF-8-Fehler und Grenzen für Größe/Elemente/Attribute/Tiefe. Der Roundtrip umfasst Foundry- und Modul-Iconpfade, unveränderte SVG-Bytes im Archiv/ZIP und angepasste Referenzen in einer neuen Weltkopie. Ein separater Test verhindert den Upload eines abgelehnten SVGs. Die gemeldete Zeichenfolge `IA: icons/svg/sun.svg|icons/svg/sleep.svg` wird als Modultext bewahrt und nicht als Einzeldatei gelesen. Als XML-Testparser dient `@xmldom/xmldom` 0.9.12 im strikten XML-Modus; die native Browser-/Foundry-Abnahme bleibt offen.
 
@@ -23,7 +25,7 @@ npm run build
 | --- | --- |
 | Szene | 32 Level, eingebettete Kennungen, native Daten unverändert, Wände/Licht/Tiles/Dächer/Regionen, optionale Flags, Tokens nur aus Arbeitskopie entfernt |
 | Medien/Referenzen | Levelhintergründe, Dachbilder, Zeichnungen, Tile-/Flag-Medien, Audio bei tatsächlicher Referenz, fehlende Szenenziele |
-| SVG | Statisches Profil, unveränderte Bytes, aktive/externe Inhalte abgelehnt, XML-/UTF-8-/Komplexitätsgrenzen, Archiv-/ZIP-/Weltkopie-Roundtrip |
+| SVG | Statisches Profil einschließlich Inline-Geometrie/-Größen und touch-action, unveränderte Bytes, aktive/externe Inhalte abgelehnt, XML-/UTF-8-/Komplexitätsgrenzen, Archiv-/ZIP-/Weltkopie-Roundtrip |
 | JSON/Pfade | Prototype-Schlüssel, Tiefenlimit, Dokumenttyp, erkennbare Secrets, Traversal und kodierte Pfade |
 | Katalog | Hierarchie, Umbenennen/Verschieben, Zyklusfehler, Suche und Paging mit 5.000 Metadaten |
 | ZIP | Stored/Deflate, CRC32, Headerabweichungen, Verschlüsselung, Größen-/Dateianzahl-/Expansionsschutz, Fremdzuordnung und Abbruch |

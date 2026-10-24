@@ -17,6 +17,30 @@ test("static SVG graphics, gradients and inert editor metadata retain their byte
   }
 });
 
+test("static SVG inline geometry, sizing and touch styles retain their bytes", () => {
+  runtime();
+  const styles = [
+    "touch-action:none", "touch-action:pan-x pan-y pinch-zoom", " TOUCH-ACTION : manipulation !important ; ",
+    "height:100%;width:100%;min-height:1px;max-height:512px;min-width:1px;max-width:512px",
+    "x:2px;y:3px;cx:10px;cy:10px;r:8px;rx:2px;ry:3px"
+  ];
+  for (const style of styles) {
+    const bytes = utf8(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" style="${style}"><rect width="20" height="20" style="${style}"/></svg>`);
+    const before = bytes.slice();
+    assert.equal(mediaType(bytes, "icons/test.svg"), "image/svg+xml");
+    assert.deepEqual(bytes, before);
+  }
+});
+
+test("new SVG style properties still reject external, active and unsupported CSS", () => {
+  runtime();
+  for (const style of ["height:url(https://example.invalid/a.svg)", "width:expression(alert(1))",
+    "touch-action:attr(data-touch)", "height:u\\72l(#g)", "width:/* bypass */100%",
+    "touch-action:none;behavior:url(#g)", "height:100%;--resource:url(#g)", "animation:spin 1s infinite"]) {
+    assert.throws(() => mediaType(utf8(wrap(`<path style="${style}"/>`)), "test.svg"), /SVG/);
+  }
+});
+
 test("SVG active content, resource loads, CSS bypasses and XML directives are refused", () => {
   runtime();
   const cases = [

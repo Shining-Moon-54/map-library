@@ -19,7 +19,8 @@ const STYLE = new Set(("fill fill-opacity fill-rule stroke stroke-width stroke-o
   "stroke-miterlimit stroke-dasharray stroke-dashoffset opacity color display visibility transform transform-origin " +
   "clip-path clip-rule mask filter vector-effect paint-order stop-color stop-opacity flood-color flood-opacity " +
   "color-interpolation color-interpolation-filters font-family font-size font-style font-weight text-anchor " +
-  "dominant-baseline letter-spacing word-spacing isolation mix-blend-mode").split(" "));
+  "dominant-baseline letter-spacing word-spacing isolation mix-blend-mode " +
+  "width height min-width min-height max-width max-height x y cx cy r rx ry touch-action").split(" "));
 
 function passiveValue(value) {
   assert(!/[\\@]|\/\*|(?:javascript|vbscript|data|https?|file)\s*:|(?:expression|attr)\s*\(/i.test(value),

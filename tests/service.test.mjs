@@ -4,6 +4,7 @@ import { MemoryStorage, fixture, png, svg, runtime } from "./helpers.mjs";
 import { LibraryService } from "../scripts/foundry/service.js";
 import { assetsOf } from "../scripts/core/scene.js";
 import { inspectPackage } from "../scripts/core/package.js";
+import { utf8 } from "../scripts/core/util.js";
 
 function setup() {
   runtime(); const storage = new MemoryStorage();
@@ -39,6 +40,35 @@ test("core and module SVG icons survive archival, portable export and a new worl
   assert.equal(world.tiles[0].texture.src, record.assets.find(a => a.source === module).path);
   assert.equal(world.flags.vendor.icon, record.assets.find(a => a.source === core).path);
   assert.equal(world.flags.vendor.choice, label); assert.deepEqual(scene, before);
+});
+
+test("reported SVG style patterns archive all dependencies of a four-level scene", async () => {
+  runtime(); const storage = new MemoryStorage(), service = new LibraryService(storage);
+  // Synthetic graphics with the reported paths/styles; no vendor artwork is used.
+  const sources = ["icons/svg/book.svg", "icons/svg/daze.svg", "icons/svg/sun.svg", "icons/svg/explosion.svg",
+    "modules/tychmaps-dotmm/assets/tiles/rope-coil.svg"];
+  const media = new Map(sources.map((source, i) => [source, utf8(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" style="${i === 4 ? "height:100%;width:100%" : "touch-action:none"}"><path fill="#fff" d="M0 0H${10 + i}V20H0Z"/></svg>`
+  )]));
+  for (const [source, bytes] of media) storage.files.set(source, bytes);
+  const scene = { name: "Synthetic four-level style regression", width: 20,
+    levels: sources.slice(0, 4).map(src => ({ background: { src } })), tiles: [{ texture: { src: sources[4] } }] };
+  const before = structuredClone(scene), plan = await service.plan({ scene });
+  assert.equal(plan.assets.length, 5); assert(!plan.warnings.some(w => w.code === "asset"));
+  const record = await service.archive(plan, meta);
+  for (const asset of record.assets) assert.deepEqual(storage.files.get(asset.path), media.get(asset.source));
+  const exported = await inspectPackage(await service.export(storage.catalog, [record]));
+  const candidate = exported.candidates[0];
+  for (const [source, bytes] of media) assert.deepEqual(candidate.mappings.get(source).bytes, bytes);
+  const freshStorage = new MemoryStorage(), fresh = new LibraryService(freshStorage);
+  const freshPlan = await fresh.plan(candidate); assert(!freshPlan.warnings.some(w => w.code === "asset"));
+  const copied = await fresh.archive(freshPlan, meta);
+  globalThis.CONFIG = { Scene: { documentClass: { create: async data => data } } };
+  const world = await fresh.importToWorld(copied);
+  assert.equal(world.levels.length, 4);
+  assert.deepEqual(assetsOf(world).map(a => a.source).sort(), copied.assets.map(a => a.path).sort());
+  for (const asset of copied.assets) assert.deepEqual(freshStorage.files.get(asset.path), media.get(asset.source));
+  assert.deepEqual(scene, before);
 });
 
 test("SVG rejected by the static profile cannot be uploaded by ordinary archival", async () => {
