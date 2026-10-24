@@ -6,7 +6,9 @@
 
 Eine weltübergreifende Szenenbibliothek für **Foundry VTT v14**. Karten bleiben als native Szenendaten mit Ebenen, Wänden, Licht, Tiles, Dachbildern, Zeichnungen und Regionen archiviert. Erst beim Weltimport entsteht eine neue Szene im Weltverzeichnis.
 
-**Version 0.4.0-alpha.3 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
+**Version 0.4.0-alpha.4 ist eine experimentelle, noch nicht in einer echten Foundry-Installation abgenommene Alpha.** Automatisierte Tests prüfen Datenverarbeitung, ZIP-Sicherheit, Speicherung mit API-Doubles und die DOM-Oberfläche. Sie ersetzen keine Foundry-/Canvas-/Berechtigungsprüfung. Eine `compatibility.verified`-Angabe wird deshalb bewusst nicht gesetzt. Zunächst eine separate v14-Testwelt verwenden.
+
+**Neu in Alpha 4:** Im Szenenverzeichnis öffnet unten **„Map Library öffnen“** die Bibliothek. Ein Rechtsklick auf eine Welt-Szene bietet **„In Map Library sichern“** und öffnet direkt die Importvorschau dieser Szene. Gespeichert wird erst nach Bestätigung. Beide Zugriffe sind für GMs verfügbar; die optionale schwebende Schaltfläche lässt sich weiterhin getrennt abschalten.
 
 **Änderungen in Alpha 3:** Beim Sichern werden Leerzeichen in den Dateinamen der Medienkopien automatisch durch `_` ersetzt, auch wenn sie im Quellpfad als `%20` stehen. Lesbare Namen erhalten zusätzlich eine Prüfsumme für eindeutige Zuordnungen; beim Weltimport werden die Verweise auf die Kopien angepasst. Die Quelldateien der laufenden Welt und das native Archivoriginal bleiben unverändert. Außerdem ist die doppelte URL-Kodierung zu `%2520`, die zu falschen 404-Fehlern führte, behoben. Zum Aktualisieren die Welt beenden, im Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt anschließend neu laden. Der Manifest-Link bleibt gleich.
 
@@ -46,15 +48,15 @@ Die reguläre Installation erfolgt über Foundrys **Manifest-URL**, entsprechend
 3. Den obigen Installationslink in das Feld **Manifest URL** einfügen und **Installieren** wählen.
 4. Foundry liest die `module.json`, lädt das dort unter `download` angegebene ZIP automatisch herunter und entpackt das Modul selbst.
 5. Eine v14-Testwelt laden, als GM unter **Module verwalten / Manage Modules** die **Map Library** aktivieren und die Einstellungen speichern.
-6. **Map Library** unten im Fenster oder unter **Spieleinstellungen → Moduleinstellungen → Map Library öffnen** wählen.
+6. Im Szenenverzeichnis unten **Map Library öffnen** oder unter **Spieleinstellungen → Moduleinstellungen → Map Library öffnen** wählen.
 
-Die öffentliche Manifest-URL bleibt für spätere Updates gleich. Das ZIP im [Alpha-Release](https://github.com/Shining-Moon-54/map-library/releases/tag/v0.4.0-alpha.3) ist das von Foundry automatisch geladene Installationspaket. Der Release-Workflow kann auf einem vorbereiteten Release-Zweig gestartet werden: Er legt zuerst ein tatsächliches Release an, veröffentlicht ZIP und Manifest, prüft den anonymen Zugriff und übernimmt erst danach den Stand einschließlich Update-Manifest nach `main`.
+Die öffentliche Manifest-URL bleibt für spätere Updates gleich. Das ZIP im [Alpha-Release](https://github.com/Shining-Moon-54/map-library/releases/tag/v0.4.0-alpha.4) ist das von Foundry automatisch geladene Installationspaket. Der Release-Workflow kann auf einem vorbereiteten Release-Zweig gestartet werden: Er legt zuerst ein tatsächliches Release an, veröffentlicht ZIP und Manifest, prüft den anonymen Zugriff und übernimmt erst danach den Stand einschließlich Update-Manifest nach `main`.
 
 Die Nutzung erfordert weder Node/Python auf dem Foundry-Server noch einen zusätzlichen Dienst. Node 24 und npm werden ausschließlich für Entwicklung, Tests und Paketbau benötigt. Die ZIP-Bibliothek ist im Installationspaket enthalten.
 
 ## Benutzung
 
-**Archivieren:** „Welt-Szene archivieren“ → Szene wählen → Assetinventar und Warnungen prüfen → Name, Kategorie, Tags und Rechteangaben ergänzen → fehlende Medien zuordnen → archivieren. Fehlende Assets und identische Szenendaten müssen ausdrücklich zugelassen werden.
+**Archivieren:** Rechtsklick auf eine Welt-Szene → **„In Map Library sichern“**. Alternativ in der Bibliothek „Welt-Szene archivieren“ → Szene wählen. Danach Assetinventar und Warnungen prüfen → Name, Kategorie, Tags und Rechteangaben ergänzen → fehlende Medien zuordnen → archivieren. Fehlende Assets und identische Szenendaten müssen ausdrücklich zugelassen werden.
 
 **Dateien importieren:** JSON und zugehörige Bilder gemeinsam auswählen oder ein ZIP öffnen. Im Inventar jeden gewünschten Eintrag prüfen. Bei mehreren gleichnamigen Assets die Zuordnung selbst wählen, anschließend „Zuordnung erneut prüfen“. Zusätzliche Dateien lassen sich in der Vorschau nachreichen. Kategorien aus eigenen Paketen können vor der Kartenaufnahme übernommen werden; widersprüchliche vorhandene Kategorien werden nicht überschrieben.
 

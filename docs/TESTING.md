@@ -1,6 +1,8 @@
 # Tests und Abnahme
 
-Stand 24.10.2026, Version 0.4.0-alpha.3: **43 automatisierte Tests bestanden**. Ausgeführt mit Node 24.19.0. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+Stand 24.10.2026, Version 0.4.0-alpha.4: **48 automatisierte Tests bestanden**. Ausgeführt mit Node 24.19.0. Kein realer Foundry-v14-Server war in der Entwicklungsumgebung verfügbar. Die synthetischen Fixtures sind selbst erzeugt; sie sind keine von Foundry validierten Exportbeispiele.
+
+Fünf neue Tests prüfen die v14-Menüintegration: ein einzelner Bibliotheksbutton nach erneutem Rendern und in separaten Fenstern, Erhalt fremder Buttons, kontextabhängige Szenenkennung (`entryId`, `documentId`, `sceneId`), Ausschluss von Ordnern/Kompendien, GM-Prüfung auch nach Rollenwechsel, Fehlermeldungen bei gelöschten Szenen und Registrierung während `init`. Der direkte Vorschauweg wird mit dem tatsächlichen Service und Storage-Double geprüft; dabei entstehen keine Archiveinträge und die Quellszene bleibt unverändert. Eine echte Foundry-Menüabnahme bleibt offen.
 
 Der falsche 404-Fehler bei kodierten Leerzeichen wurde vor der Korrektur reproduziert: Die URL enthielt `%2520` statt `%20`, und die simulierte Serverdatei wurde nicht gefunden. Die neuen Tests prüfen rohe, kodierte und gemischte Pfade, Umlaute, reservierte Dateinamenzeichen, genau eine Dekodierung und weiterhin abgewiesene unsichere Pfade. Ein Integrationstest führt Archivierung, portablen Export und Weltimport über den FoundryStorage-Adapter und einen statischen Server-Double aus; die native Originalreferenz bleibt unverändert. Er prüft außerdem Unterstriche im Namen der Archiv- und Exportkopie sowie die neu zugeordnete Medienreferenz in der Weltkopie. Zwei zusätzliche Tests prüfen den Ersatz jedes einzelnen Leerzeichens, kodierte Namen, Umlaute, Namenslängen und getrennte Namen für unterschiedliche Prüfsummen. Der bestehende Roundtrip prüft weiterhin die Deduplizierung identischer PNG-Bytes.
 
@@ -35,7 +37,7 @@ Einträge erst nach tatsächlicher Durchführung mit Version, Datum, Betriebssys
 
 | ID | Durchführung | Erwartetes Ergebnis | Stand |
 | --- | --- | --- | --- |
-| V14-01 | Über die Manifest-URL installieren und in separater v14-Testwelt aktivieren | Init/Ready ohne Konsolefehler, Settings und Schaltfläche sichtbar | Offen |
+| V14-01 | Über die Manifest-URL installieren und in separater v14-Testwelt aktivieren | Init/Ready ohne Konsolefehler; „Map Library öffnen“ im Szenenverzeichnis und „In Map Library sichern“ im Szenen-Rechtsklickmenü funktionieren; keine Dopplung nach Rendern oder Popout | Offen |
 | V14-02 | Bild mit bekanntem Raster importieren | Richtige Maße; natives Level; Rasterdaten bleiben unangetastet | Offen |
 | V14-03 | Echte Szene mit 32 Leveln, unterschiedlichen Höhen/Sichtbarkeiten, Tiles und Dächern archivieren | Vollständige native Daten, Assets und Warnungen; Original unverändert | Offen |
 | V14-04 | `toObject`, `toCompendium`, manuelles `exportToJSON` vergleichen | Tatsächliche Bereinigung dokumentiert; keine Mutationen am Original | Offen |

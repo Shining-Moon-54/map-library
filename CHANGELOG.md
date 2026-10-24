@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-alpha.4 — 2026-10-24
+
+- Schaltfläche „Map Library öffnen“ unten im Szenenverzeichnis, einschließlich separatem Szenenfenster. Bestehende Schaltflächen anderer Module bleiben erhalten; erneutes Rendern erzeugt keine doppelten Einträge.
+- Rechtsklick auf eine Welt-Szene → „In Map Library sichern“. Die Importvorschau erhält direkt die gewählte Szene und speichert erst nach Bestätigung. Ordner und Kompendien werden nicht als Welt-Szenen behandelt.
+- Integration über die v14-Hooks `renderSceneDirectory` und `getSceneContextOptions`, Registrierung bereits während `init`; GM-Prüfung bei Anzeige und Ausführung. Die Modul-API bietet denselben Vorschauweg als `archiveScene(sceneId)`.
+- Dialogrendern wird abgewartet, damit Fehler beim Öffnen von Vorschauen an den auslösenden Zugriff zurückgemeldet werden.
+- Insgesamt 48 automatisierte Tests. Die Korrekturen aus Alpha 2 und 3 sind enthalten. Die tatsächliche Prüfung der beiden Menüzugriffe in Foundry v14 steht noch aus.
+
 ## 0.4.0-alpha.3 — 2026-10-24
 
 - Beim Sichern ersetzen Medienkopien jedes Leerzeichen im Dateinamen durch `_`, einschließlich URI-kodiertem `%20`. Die Namen sind lesbar und enthalten die vollständige Prüfsumme. Portable Exporte verwenden dieselbe Regel, identische Medienbytes bleiben dedupliziert und Weltkopien verweisen auf die neuen Pfade.

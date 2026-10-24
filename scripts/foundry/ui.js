@@ -62,12 +62,19 @@ export function makeApplications(storage, service) {
     _replaceHTML(result, content) { content.replaceChildren(result); }
     async _onClose(options) { this.controller.abort(); await super._onClose(options); }
   }
-  const modal = (title, build, options) => { const app = new DOMWindow(title, build, options); app.render({ force: true }); return app; };
+  const modal = async (title, build, options) => { const app = new DOMWindow(title, build, options); await app.render({ force: true }); return app; };
+
+  async function archiveWorldScene(sceneId, { update = null, onSaved = () => {} } = {}) {
+    requireGM();
+    const scene = game.scenes.get(sceneId); assert(scene, "Szene existiert nicht mehr in dieser Welt.");
+    await storage.init();
+    return review({ name: scene.name, scene: scene.toObject(), mappings: new Map() }, new Map(), update, onSaved);
+  }
 
   async function review(candidate, available = new Map(), update = null, onSaved = () => {}) {
     let plan = await service.plan(candidate);
     const { catalog } = await storage.load();
-    const app = modal(update ? "Vorlage aktualisieren – neue Revision" : "Import prüfen und archivieren", async app => {
+    const app = await modal(update ? "Vorlage aktualisieren – neue Revision" : "Import prüfen und archivieren", async app => {
       const root = node("section", null, "ml-review");
       root.append(node("p", "Gespeichert wird die native Originalszene einschließlich vorhandener Flags und Tokens. Weltkopien entstehen ohne Tokens. Das Original bleibt unverändert; separate FogExploration-Dokumente werden nicht gelesen.", "ml-note"));
       if (update) root.append(node("p", "Eine neue Revision ersetzt die aktuelle Katalogverknüpfung. Die bisherige Revision bleibt für die Wiederherstellung erhalten."));
@@ -251,8 +258,7 @@ export function makeApplications(storage, service) {
       return modal("Welt-Szene wählen", app => {
         const root = node("section"); const select = field(root, "Szene", "scene", scenes[0][0], { options: scenes });
         root.append(button("Importvorschau öffnen", async () => {
-          const scene = game.scenes.get(select.value); assert(scene, "Szene existiert nicht mehr.");
-          await review({ name: scene.name, scene: scene.toObject(), mappings: new Map() }, new Map(), update, () => this.render({ force: true })); await app.close();
+          await archiveWorldScene(select.value, { update, onSaved: () => this.render({ force: true }) }); await app.close();
         }), button("Abbrechen", () => app.close())); return root;
       });
     }
@@ -288,7 +294,7 @@ export function makeApplications(storage, service) {
         for (const name of available.keys()) if (["png", "jpg", "jpeg", "webp"].includes(extension(name)) && !used.has(name)) candidates.push({ image: name, name, sourceFile: name });
       }
       assert(candidates.length, "Keine Szenen oder unterstützten Kartenbilder gefunden.");
-      modal("Importinventar – einzeln prüfen", app => {
+      return modal("Importinventar – einzeln prüfen", app => {
         const root = node("section"); root.append(node("p", `${candidates.length} mögliche Karteneinträge. Jede Karte wird vor dem Speichern geprüft. Mehrdeutige Assets lassen sich in der Vorschau manuell zuordnen.`));
         if (packageCategories.length) root.append(button("Paketkategorien übernehmen", async () => {
           await storage.transaction(catalog => {
@@ -327,7 +333,7 @@ export function makeApplications(storage, service) {
     chooseCategory() {
       return modal("Kategorie wählen", app => {
         const root = node("section"), choice = field(root, "Kategorie", "category", "uncategorized", { options: categories(this.catalog) });
-        root.append(button("Bearbeiten", async () => { this.editCategory(this.catalog.categories.find(c => c.id === choice.value)); await app.close(); })); return root;
+        root.append(button("Bearbeiten", async () => { await this.editCategory(this.catalog.categories.find(c => c.id === choice.value)); await app.close(); })); return root;
       });
     }
     moveSelected() {
@@ -351,10 +357,10 @@ export function makeApplications(storage, service) {
           assert(data.name.trim(), "Name fehlt."); await service.updateMetadata([entry.id], data); await this.render({ force: true }); await app.close();
         }), button("Integrität prüfen", async () => {
           const result = await service.preflight(entry); ui.notifications.info(result.warnings.some(w => w.code === "asset") ? "Fehlende oder veränderte Assets erkannt." : "Szenendatei und alle archivierten Assets stimmen mit ihren Prüfsummen überein.");
-          modal("Integritätsbericht", () => warningList(result.warnings));
+          await modal("Integritätsbericht", () => warningList(result.warnings));
         }), button("Schließen", () => app.close())); return form;
       });
     }
   }
-  return { MapLibraryApp, review, worldImport };
+  return { MapLibraryApp, review, worldImport, archiveWorldScene };
 }

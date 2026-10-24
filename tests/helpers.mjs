@@ -40,7 +40,7 @@ export class FoundryCollection extends Map {
   map(transform) { return Array.from(this.values(), transform); }
 }
 export function runtime() {
-  globalThis.game = { user: { isGM: true }, version: "14.368",
+  globalThis.game = { user: { isGM: true }, version: "14.368", release: { generation: 14 },
     modules: new FoundryCollection([["map-library", { id: "map-library", active: true }]]), scenes: new FoundryCollection() };
   globalThis.foundry = { utils: { randomID: () => "NewWorldScene001" } };
 }

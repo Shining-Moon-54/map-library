@@ -3,17 +3,19 @@ import { FoundryStorage, requireGM } from "./foundry/storage.js";
 import { LibraryService } from "./foundry/service.js";
 import { makeApplications, node } from "./foundry/ui.js";
 import { diagnoseScene } from "./foundry/diagnostics.js";
+import { registerSceneMenus } from "./foundry/scene-menu.js";
 
 Hooks.once("init", () => {
   const storage = new FoundryStorage(), service = new LibraryService(storage);
-  const { MapLibraryApp } = makeApplications(storage, service);
+  const { MapLibraryApp, archiveWorldScene } = makeApplications(storage, service);
   const open = () => { requireGM(); return new MapLibraryApp().render({ force: true }); };
   game.settings.registerMenu(ID, "library", {
     name: "Map Library öffnen", label: "Bibliothek öffnen", icon: "fa-solid fa-map",
     hint: "Weltübergreifendes Archiv für native Foundry-v14-Szenen. Experimentelle Alpha.", type: MapLibraryApp, restricted: true
   });
-  game.settings.register(ID, "launcher", { name: "Map-Library-Schaltfläche anzeigen", scope: "client", config: true, type: Boolean, default: true, requiresReload: true });
-  game.modules.get(ID).api = Object.freeze({ version: VERSION, open, storage, service, diagnoseScene });
+  game.settings.register(ID, "launcher", { name: "Schwebende Map-Library-Schaltfläche anzeigen", scope: "client", config: true, type: Boolean, default: true, requiresReload: true });
+  game.modules.get(ID).api = Object.freeze({ version: VERSION, open, archiveScene: archiveWorldScene, storage, service, diagnoseScene });
+  registerSceneMenus({ openLibrary: open, archiveScene: archiveWorldScene });
 });
 
 Hooks.once("ready", () => {

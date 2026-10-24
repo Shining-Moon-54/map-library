@@ -20,6 +20,7 @@ Quelle: vollständige Projektübergabe, Abschnitte 1–14. Status: **I** impleme
 | Original unverändert, Update explizit, Historie | I/T | Neue Revisionen, erwartete Vorgängerrevision; Wiederherstellungs-UI offen |
 | GM-Prüfung auch an wirksamen Aktionen | I/T | Service-/Storageprüfung; Foundry-Serverautorisierung praktisch offen |
 | Bild, Welt-Szene, native JSON | I/T | PNG/JPG/WebP plus selektierte Medienabhängigkeiten |
+| Bibliotheksbutton im Szenenverzeichnis, Sichern per Szenen-Rechtsklick | I/T | v14-Hooks, direkter Vorschauweg, GM-Prüfung und DOM-/Hook-Tests; echte Menüabnahme offen |
 | UVTT/DD2VTT | O | Primärformat-/v14-Tests und Konvertierung fehlen |
 | Eigenes ZIP und Fremdstrukturen | I/T | Inventar, eindeutige Zuordnung oder manuelle Auswahl, Limits; große reale Archive offen |
 | Direktes öffentliches HTTPS → Foundry-Server | O | Sichere reine Modularchitektur nicht belegt; kein Browserdownload als Erfüllung ausgegeben |

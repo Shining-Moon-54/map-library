@@ -39,4 +39,6 @@
 .ml-inventory-row { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--ml-line); padding: 10px 0; overflow-wrap: anywhere; }
 .ml-empty { padding: 45px 20px; grid-column: 1 / -1; text-align: center; color: #c3bda9; }
 .ml-launcher { position: fixed; bottom: 14px; left: 250px; z-index: 50; width: auto; background: #242730eF; border: 1px solid #b99755; border-radius: 5px; padding: 6px 15px; color: #ebd5a8; }
+.ml-scene-tools { flex: 0 0 auto; padding: 6px 8px; }
+.ml-scene-library { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
 @media (max-width: 800px) { .ml-filters { grid-template-columns: 1fr 1fr; } .ml-list .ml-card { display: block; } }

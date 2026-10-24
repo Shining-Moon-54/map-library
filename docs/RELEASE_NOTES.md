@@ -1,12 +1,14 @@
-Map Library 0.4.0-alpha.3 speichert Medienkopien mit Unterstrichen statt Leerzeichen und behebt falsche 404-Fehler bei kodierten Dateipfaden.
+Map Library 0.4.0-alpha.4 ergänzt die beiden fehlenden Zugriffe auf die Szenenbibliothek.
 
-**Neu beim Sichern:** Jedes Leerzeichen im Dateinamen einer Medienkopie wird automatisch durch `_` ersetzt, auch bei `%20` im Quellpfad. Die Kopien erhalten einen lesbaren Namen mit zusätzlicher Prüfsumme. Die Regel gilt auch für portable Exporte; beim Weltimport werden die Verweise automatisch angepasst. Quelldateien der laufenden Welt und native Archivoriginale bleiben unverändert. Bestehende Archive bleiben lesbar.
+**Im Szenenverzeichnis:** Unten erscheint für GMs **„Map Library öffnen“**. Der Button öffnet die zentrale Bibliothek und erscheint auch im separaten Szenenfenster. Andere Modulbuttons bleiben erhalten. Die Einstellung für den schwebenden Button beeinflusst diesen Zugriff nicht.
 
-**Behoben:** Foundry hinterlegt Leerzeichen häufig als `%20` in Szenenreferenzen. Das Modul kodierte diese Zeichen bisher erneut zu `%2520` und erhielt dadurch einen 404-Fehler. Lokale Pfadbestandteile werden jetzt genau einmal dekodiert und anschließend für die HTTP-Anfrage kodiert. Rohe, kodierte und gemischte Leerzeichen sowie Umlaute funktionieren damit ohne Umbenennen der Dateien. Originaldateien und native Archivdaten bleiben unverändert.
+**Im Rechtsklickmenü einer Welt-Szene:** **„In Map Library sichern“** öffnet direkt die Importvorschau der angeklickten Szene. Gespeichert wird erst über die Bestätigung in der Vorschau. Rechte und die Existenz der Szene werden erneut geprüft; Ordner und Kompendieneinträge werden nicht als Welt-Szenen behandelt.
 
-**Geprüft:** Die falsche URL und der fehlgeschlagene Assetzugriff wurden vor der Korrektur reproduziert. Alle 43 Tests bestehen. Ein Integrationstest archiviert eine Datei mit kodiertem Leerzeichen über das simulierte Foundry-Dateisystem, prüft die Namen mit Unterstrichen, exportiert sie portabel und erstellt eine neue Weltkopie mit angepassten Verweisen. Tests für Pfadschutz, Umlaute, reservierte Dateinamenzeichen, wörtliche Prozentzeichen, Namenslängen und eindeutige Namen sind enthalten. Das Archivformat bleibt kompatibel; die Collection-Korrektur aus Alpha 2 ist weiterhin enthalten.
+**Geprüft:** Alle 48 Tests bestehen. Die neuen Hook-/DOM-Tests prüfen erneutes Rendern, Erhalt anderer Schaltflächen, die Auswahl der richtigen Szene, fehlende Szenen, Spielerrechte und die Registrierung vor dem ersten Szenenrendern. Ein Test öffnet die tatsächliche Modulvorschau mit Service-/Storage-Doubles und prüft, dass dabei weder archiviert noch die Quellszene verändert wird. Eine Prüfung dieser Menüs in einer echten Foundry-v14-Laufzeit steht noch aus.
 
-**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.3** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
+**Weiterhin enthalten:** Sichere Medienkopien mit `_` statt Leerzeichen, korrektes Lesen von `%20`-Pfaden und die Collection-Korrektur aus Alpha 2. Bestehende Archive bleiben lesbar.
+
+**Update:** Welt beenden, im Foundry-Setup unter **Zusatzmodule** die Map Library aktualisieren und die Welt neu laden. Anschließend muss die Modulversion **0.4.0-alpha.4** angezeigt werden. Der unten stehende Manifest-Link bleibt gleich.
 
 Enthalten: native Original-Szenenarchive, lokale Assetkopien, Kategorien und Metadaten, neue World-Scene ohne Tokens, portable ZIPs mit Prüfsummen, Fremd-ZIP-Inventar und manuelle Assetzuordnung, Suche/Favoriten/Paging, unveränderliche Revisionen und Konflikterkennung.
 

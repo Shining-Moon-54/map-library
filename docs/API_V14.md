@@ -19,6 +19,8 @@ Stand: 24.10.2026. Geprüft gegen die offiziellen öffentlichen v14-Dokumentatio
 | `FilePicker.uploadPersistent(packageId,path,file,body,options)` | Dokumentierter Upload in persistenten System-/Modulspeicher; keine selbst erfundene Server-API |
 | `ApplicationV2._renderHTML` / `_replaceHTML` | DOM-basierte Benutzeroberfläche ohne HTML-Einfügen fremder Namen |
 | `game.modules` / `Collection.values()` | Foundrys Collection iteriert standardmäßig Werte statt Map-Einträgen. Aktive Modulkennungen werden aus `values()` gelesen; Vorschau und Importprüfung verwenden dieselbe Auswertung |
+| `renderSceneDirectory(application, element, ...)` | Spezialisierter `renderApplicationV2`-Hook; HTMLElement um den Bibliotheksbutton ergänzen, einschließlich erneutem Rendern und Popout |
+| `getSceneContextOptions(application, menuItems)` | Spezialisierter `getDocumentContextOptions`-Hook; zusätzlicher Eintrag zum Sichern einer angeklickten Welt-Szene. Bedingungen und Callback erhalten DOM-Elemente |
 
 `ClientDocument.exportToJSON()` ist eine Downloadaktion; es wird nicht als JSON-Rückgabefunktion verwendet. `importFromJSON()` ist kein Ersatz für das Erstellen einer neuen Szene. Foundry-Szenenexporte bündeln die Medienbytes nicht automatisch; diese Aufgabe erledigt das Paketformat des Moduls.
 
@@ -32,6 +34,10 @@ Lokale Szenenreferenzen können bereits URI-kodierte Dateinamen enthalten. `loca
 - [DatabaseCreateOperation](https://foundryvtt.com/api/v14/interfaces/foundry.abstract.types.DatabaseCreateOperation.html)
 - [FilePicker](https://foundryvtt.com/api/v14/classes/foundry.applications.apps.FilePicker.html)
 - [ApplicationV2](https://foundryvtt.com/api/v14/classes/foundry.applications.api.ApplicationV2.html)
+- [SceneDirectory](https://foundryvtt.com/api/v14/classes/foundry.applications.sidebar.tabs.SceneDirectory.html)
+- [renderApplicationV2](https://foundryvtt.com/api/v14/functions/hookEvents.renderApplicationV2.html)
+- [getDocumentContextOptions](https://foundryvtt.com/api/v14/functions/hookEvents.getDocumentContextOptions.html)
+- [ContextMenuEntry](https://foundryvtt.com/api/v14/interfaces/foundry.ContextMenuEntry.html)
 - [Module](https://foundryvtt.com/api/v14/classes/foundry.packages.Module.html)
 - [Collection](https://foundryvtt.com/api/v14/classes/foundry.utils.Collection.html)
 - [Game](https://foundryvtt.com/api/v14/classes/foundry.Game.html)

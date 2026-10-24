@@ -27,6 +27,6 @@ Die Projektübergabe legt den Gesamtumfang fest. Eine Etappe gilt erst nach ihre
 
 Eine gute Aufgabe enthält Ausgangsversion/Commit, genau ein überprüfbares Ziel, betroffene Anforderungen, primäre API-Quellen und Abnahmedaten. Beispiel:
 
-> Prüfe Version 0.4.0-alpha.3 in Foundry v14 anhand docs/TESTING.md. Korrigiere nur Archivierung und Weltimport einer nativen 32-Level-Szene mit Regionen. Behalte Originale unverändert. Liefere reproduzierbaren Testbericht und eine neue Alpha; behauptete API-Kompatibilität nur nach dem tatsächlichen Test.
+> Prüfe Version 0.4.0-alpha.4 in Foundry v14 anhand docs/TESTING.md. Korrigiere nur Archivierung und Weltimport einer nativen 32-Level-Szene mit Regionen sowie die beiden Szenenmenü-Zugriffe. Behalte Originale unverändert. Liefere reproduzierbaren Testbericht und eine neue Alpha; behauptete API-Kompatibilität nur nach dem tatsächlichen Test.
 
 Keine Funktion wird durch Anbieterzwang oder künstliche Freischaltungen beschränkt. Implementierte lokale Funktionen bleiben unabhängig von der Cloud nutzbar.
