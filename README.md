@@ -2,6 +2,14 @@
 > Dieses Projekt wird mithilfe künstlicher Intelligenz (OpenAI ChatGPT) konzipiert und entwickelt. Die Anforderungen und Entscheidungen entstehen in Zusammenarbeit mit dem Projektinitiator. Teile des Quellcodes und der Dokumentation sind KI-generiert; eine vollständige manuelle Überprüfung oder Fehlerfreiheit wird nicht garantiert.  
 > **English:** This project is designed and developed with the assistance of artificial intelligence (OpenAI ChatGPT). Requirements and decisions are made in collaboration with the project initiator. Parts of the source code and documentation are AI-generated and are not guaranteed to be fully reviewed or error-free.
 
+## Projekt eingestellt – Nachfolger: DDB Bridge
+
+**Map Library wird nicht mehr eigenständig weiterentwickelt.** Quellcode und Funktionen werden im neuen öffentlichen Projekt **[DDB Bridge](https://github.com/Shining-Moon-54/ddb-bridge)** fortgeführt.
+
+Dieses Repository bleibt als historisches Archiv mit vorhandenen Releases und Installationsdateien erhalten. **Bitte bestehende Map-Library-Daten nicht löschen:** Die neue DDB Bridge verwendet zunächst einen eigenen Speicherort. Der Umzug von Karten per portablem ZIP wird unterstützt; eine geprüfte Vollmigration folgt.
+
+---
+
 # Map Library
 
 Eine weltübergreifende Szenenbibliothek für **Foundry VTT v14**. Karten bleiben als native Szenendaten mit Ebenen, Wänden, Licht, Tiles, Dachbildern, Zeichnungen und Regionen archiviert. Erst beim Weltimport entsteht eine neue Szene im Weltverzeichnis.
